@@ -49,23 +49,23 @@ import { getProspects, proposalId, saveProposal, saveProspect, seedInstalledBase
 import type { Lead, PipelineStatus, EquipmentItem, RegulatoryFile } from "@/types";
 
 const STATUS_META: Record<PipelineStatus, { label: string; badge: string }> = {
-  descubierto: { label: "Descubierto", badge: "bg-slate-100 text-slate-700" },
-  contactado: { label: "Contactado", badge: "bg-amber-100 text-amber-700" },
-  propuesta_enviada: { label: "Propuesta enviada", badge: "bg-emerald-100 text-emerald-700" },
-  cierre: { label: "Cliente cerrado", badge: "bg-emerald-700 text-white" },
+  descubierto: { label: "Descubierto", badge: "bg-slate-100 text-slate-700 border-slate-200" },
+  contactado: { label: "Contactado", badge: "bg-sky-50 text-sky-800 border-sky-200" },
+  propuesta_enviada: { label: "Propuesta enviada", badge: "bg-orange-50 text-orange-800 border-orange-200" },
+  cierre: { label: "Cliente cerrado", badge: "bg-[#0B1528] text-white border-[#0B1528]" },
 };
 
 const STATUS_STYLES = {
   agotado: "bg-red-50 text-red-700 border border-red-200",
-  reabastecer: "bg-amber-50 text-amber-700 border border-amber-200",
-  al_dia: "bg-emerald-50 text-emerald-700 border border-emerald-200",
+  reabastecer: "bg-orange-50 text-orange-700 border border-orange-200",
+  al_dia: "bg-sky-50 text-sky-700 border border-sky-200",
 };
 
 const CLIENT_TYPE_META: Record<string, { label: string; badge: string }> = {
-  "Clinica": { label: "Clínica Privada", badge: "bg-blue-50 text-blue-700 border-blue-200" },
-  "Hospital Publico": { label: "Hospital Público", badge: "bg-purple-50 text-purple-700 border-purple-200" },
-  "Consultorio Privado": { label: "Consultorio Privado", badge: "bg-teal-50 text-teal-700 border-teal-200" },
-  "Medico Independiente": { label: "Médico Independiente", badge: "bg-amber-50 text-amber-700 border-amber-200" },
+  "Clinica": { label: "Clínica Privada", badge: "bg-sky-50 text-[#0369A1] border-sky-200" },
+  "Hospital Publico": { label: "Hospital Público", badge: "bg-indigo-50 text-indigo-700 border-indigo-200" },
+  "Consultorio Privado": { label: "Consultorio Privado", badge: "bg-cyan-50 text-cyan-800 border-cyan-200" },
+  "Medico Independiente": { label: "Médico Independiente", badge: "bg-orange-50 text-orange-800 border-orange-200" },
 };
 
 function formatCurrency(value: number) {
@@ -322,7 +322,7 @@ export default function Home() {
   }[currentTab];
 
   return (
-    <div className="min-h-screen bg-[#F7F5F0] text-[#0F2F38]">
+    <div className="min-h-screen bg-[#F8FAFC] text-[#0F172A]">
       <div className="flex min-h-screen">
         <Sidebar
           currentTab={currentTab}
@@ -331,21 +331,21 @@ export default function Home() {
 
         <main className="flex-1 p-5 lg:p-7">
           <div className="mx-auto max-w-[1600px]">
-            {/* Top Navigation & Action Controls Header */}
-            <header className="mb-6 flex flex-col gap-4 border-b border-slate-200 pb-5 lg:flex-row lg:items-center lg:justify-between">
+            {/* Top Navigation & Action Controls Header - Tecnocare style */}
+            <header className="mb-6 flex flex-col gap-4 border-b border-slate-200/80 bg-white p-5 rounded-2xl shadow-xs lg:flex-row lg:items-center lg:justify-between">
               <div>
                 <div className="flex items-center gap-2">
-                  <span className="h-2 w-2 rounded-full bg-[#059669]"></span>
-                  <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#0F766E]">ConfIA · Asistente Comercial</p>
+                  <span className="h-2 w-2 rounded-full bg-[#F97316]"></span>
+                  <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-[#0284C7]">TECNOCARE · OZONO MÉDICO PERÚ</p>
                 </div>
-                <h1 className="mt-1 font-serif text-3xl font-bold text-[#071C21]">{tabTitle}</h1>
-                <p className="text-xs text-slate-500 mt-0.5">Clínicas privadas, hospitales públicos, consultorios y médicos especialistas</p>
+                <h1 className="mt-1 font-sans text-2xl lg:text-3xl font-extrabold text-[#0B1528] tracking-tight">{tabTitle}</h1>
+                <p className="text-xs text-slate-500 mt-0.5">Equipos SEDECAL con marcado CE y registro sanitario DIGEMID</p>
               </div>
 
-              {/* Action Buttons for Scraping, Prioritizing and Lead Actions */}
+              {/* Action Buttons with Tecnocare Navy and Orange accents */}
               <div className="flex flex-wrap items-center gap-2.5 self-start lg:self-auto">
                 {authUser && (
-                  <button type="button" onClick={() => signOutUser()} className="rounded-full border border-slate-200 bg-white px-3 py-2 text-xs font-medium text-slate-700">
+                  <button type="button" onClick={() => signOutUser()} className="rounded-xl border border-slate-200 bg-white px-3.5 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50">
                     {authUser.displayName ?? authUser.email ?? "Salir"}
                   </button>
                 )}
@@ -355,10 +355,10 @@ export default function Home() {
                   type="button"
                   onClick={handleScrapeIpress}
                   disabled={isScraping}
-                  className="inline-flex items-center gap-2 rounded-full border border-[#0F766E]/30 bg-white px-3.5 py-2 text-xs font-semibold text-[#071C21] shadow-sm transition hover:bg-emerald-50 hover:border-[#0F766E] disabled:opacity-50"
+                  className="inline-flex items-center gap-2 rounded-xl border border-sky-300 bg-sky-50/70 px-3.5 py-2 text-xs font-bold text-[#0369A1] shadow-xs transition hover:bg-sky-100 disabled:opacity-50"
                   title="Buscar automáticamente hospitales, consultorios y clínicas en SUSALUD y colegios médicos"
                 >
-                  <Globe className={`h-3.5 w-3.5 text-[#0F766E] ${isScraping ? "animate-spin" : ""}`} />
+                  <Globe className={`h-3.5 w-3.5 text-[#0284C7] ${isScraping ? "animate-spin" : ""}`} />
                   {isScraping ? "Buscando clientes..." : "Buscar nuevos clientes (Scraping)"}
                 </button>
 
@@ -367,13 +367,14 @@ export default function Home() {
                   type="button"
                   onClick={handleReprioritize}
                   disabled={isReprioritizing}
-                  className="inline-flex items-center gap-2 rounded-full border border-amber-300 bg-amber-50 px-3.5 py-2 text-xs font-semibold text-amber-900 shadow-sm transition hover:bg-amber-100 disabled:opacity-50"
+                  className="inline-flex items-center gap-2 rounded-xl border border-orange-200 bg-orange-50/70 px-3.5 py-2 text-xs font-bold text-orange-800 shadow-xs transition hover:bg-orange-100 disabled:opacity-50"
                   title="Reorganizar clientes por su nivel de interés"
                 >
-                  <RefreshCw className={`h-3.5 w-3.5 text-amber-700 ${isReprioritizing ? "animate-spin" : ""}`} />
+                  <RefreshCw className={`h-3.5 w-3.5 text-[#F97316] ${isReprioritizing ? "animate-spin" : ""}`} />
                   {isReprioritizing ? "Reordenando..." : "Actualizar priorización"}
                 </button>
 
+                {/* Main Action Button - Tecnocare Orange */}
                 <button
                   type="button"
                   onClick={() => {
@@ -396,7 +397,7 @@ export default function Home() {
                     setLeads((prev) => [sampleLead, ...prev]);
                     setDataMessage("Nuevo cliente agregado manualmente.");
                   }}
-                  className="inline-flex items-center gap-2 rounded-full bg-[#0B6E4F] px-4 py-2 text-xs font-semibold text-white shadow-sm transition hover:bg-[#0A5F44]"
+                  className="inline-flex items-center gap-2 rounded-xl bg-[#F97316] px-4 py-2 text-xs font-bold text-white shadow-sm shadow-orange-500/20 transition hover:bg-[#EA580C]"
                 >
                   <Zap className="h-3.5 w-3.5" />
                   Nuevo cliente
@@ -406,9 +407,9 @@ export default function Home() {
 
             {/* Notification message */}
             {dataMessage && (
-              <div className="mb-5 flex items-center justify-between rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-medium text-emerald-900 shadow-sm">
+              <div className="mb-5 flex items-center justify-between rounded-xl border border-sky-200 bg-sky-50 px-4 py-3 text-sm font-semibold text-[#0369A1] shadow-xs">
                 <span>{dataMessage}</span>
-                <button type="button" onClick={() => setDataMessage(null)} className="text-emerald-700 hover:text-emerald-950 font-bold ml-4">✕</button>
+                <button type="button" onClick={() => setDataMessage(null)} className="text-sky-700 hover:text-sky-950 font-bold ml-4">✕</button>
               </div>
             )}
 
@@ -416,10 +417,10 @@ export default function Home() {
             {currentTab === "pipeline" && (
               <>
                 <section className="mb-6 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-                  <MetricCard label="Clientes en contacto" value={metrics.openLeads.toString()} accent="emerald" />
-                  <MetricCard label="Propuestas por revisar" value={metrics.pendingDrafts.toString()} accent="amber" />
-                  <MetricCard label="Propuestas enviadas" value={metrics.proposalsSent.toString()} accent="teal" />
-                  <MetricCard label="Clientes cerrados" value={metrics.activeClients.toString()} accent="green" />
+                  <MetricCard label="Clientes en contacto" value={metrics.openLeads.toString()} accent="sky" />
+                  <MetricCard label="Propuestas por revisar" value={metrics.pendingDrafts.toString()} accent="orange" />
+                  <MetricCard label="Propuestas enviadas" value={metrics.proposalsSent.toString()} accent="blue" />
+                  <MetricCard label="Clientes cerrados" value={metrics.activeClients.toString()} accent="deep" />
                 </section>
 
                 <section className="grid gap-4 xl:grid-cols-4">
@@ -691,9 +692,9 @@ export default function Home() {
               <section className="space-y-6">
                 <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
                   <MetricCard label="Equipos instalados" value="14 unidades" accent="deep" />
-                  <MetricCard label="Insumos por reponer" value="2 clientes" accent="amber" />
-                  <MetricCard label="Ciclo de Mantenimiento" value="Cada 5 años" accent="teal" />
-                  <MetricCard label="Médicos capacitados" value="9 de 12" accent="green" />
+                  <MetricCard label="Insumos por reponer" value="2 clientes" accent="orange" />
+                  <MetricCard label="Ciclo de Mantenimiento" value="Cada 5 años" accent="sky" />
+                  <MetricCard label="Médicos capacitados" value="9 de 12" accent="blue" />
                 </div>
 
                 <div className="grid gap-6 xl:grid-cols-[1fr_1.3fr]">
@@ -853,47 +854,48 @@ export default function Home() {
             {/* TAB: CATÁLOGO DE EQUIPOS */}
             {currentTab === "catalogo" && (
               <section className="space-y-6">
-                <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
+                <div className="flex flex-col gap-2 rounded-2xl bg-gradient-to-r from-[#0B1528] via-[#0F294D] to-[#0284C7] p-6 text-white shadow-md md:flex-row md:items-center md:justify-between">
                   <div>
-                    <h2 className="font-serif text-2xl font-bold text-[#071C21]">Catálogo de Equipos y Accesorios</h2>
-                    <p className="text-sm text-slate-600">Modelos oficiales SEDECAL y accesorios médicos con registro sanitario DIGEMID.</p>
+                    <span className="text-[11px] font-bold uppercase tracking-widest text-[#38BDF8]">TECNOCARE · DISTRIBUIDOR OFICIAL</span>
+                    <h2 className="font-sans text-2xl lg:text-3xl font-black text-white mt-1">Generadores de Ozono Médico SEDECAL España</h2>
+                    <p className="text-xs text-sky-100/90 mt-1">Equipos europeos de alta precisión con marcado CE y registro sanitario DIGEMID en el Perú.</p>
                   </div>
-                  <div className="inline-flex items-center gap-2 rounded-full bg-emerald-50 border border-emerald-200 px-3.5 py-1.5 text-xs font-semibold text-emerald-800">
-                    <ShieldCheck className="h-4 w-4 text-emerald-600" />
-                    Equipos de uso prolongado (Mantenimiento hasta 6 años)
+                  <div className="inline-flex items-center gap-2 rounded-xl bg-white/10 backdrop-blur-xs border border-white/20 px-4 py-2 text-xs font-bold text-white shrink-0">
+                    <span className="w-2 h-2 rounded-full bg-[#F97316] animate-pulse"></span>
+                    Mantenimiento Mayor Cada 5 Años
                   </div>
                 </div>
 
                 <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
                   {equipmentList.map((eq) => (
-                    <div key={eq.id} className="flex flex-col justify-between rounded-3xl border border-slate-200 bg-white p-6 shadow-sm transition hover:shadow-md hover:border-[#0B6E4F]/30">
+                    <div key={eq.id} className="flex flex-col justify-between rounded-3xl border border-slate-200/90 bg-white p-6 shadow-xs transition hover:shadow-lg hover:border-[#0284C7]/50 group">
                       <div>
                         <div className="flex items-start justify-between gap-2">
                           <div>
-                            <span className="text-[11px] font-bold uppercase tracking-wider text-[#059669]">{eq.brand}</span>
-                            <h3 className="font-serif text-2xl font-bold text-[#071C21] mt-0.5">{eq.model}</h3>
+                            <span className="text-[10px] font-black uppercase tracking-widest text-[#F97316]">{eq.brand} · ESPAÑA</span>
+                            <h3 className="font-sans text-2xl font-black text-[#0B1528] mt-0.5 tracking-tight group-hover:text-[#0284C7] transition-colors">{eq.model}</h3>
                           </div>
-                          <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-700">
+                          <span className="rounded-full bg-sky-50 border border-sky-100 px-3 py-1 text-xs font-bold text-[#0369A1]">
                             {eq.category}
                           </span>
                         </div>
 
-                        <p className="mt-3 text-sm text-slate-600 leading-relaxed">{eq.description}</p>
+                        <p className="mt-3 text-xs text-slate-600 leading-relaxed">{eq.description}</p>
 
-                        <div className="mt-5 space-y-2 border-t border-slate-100 pt-4">
-                          <div className="flex items-center justify-between text-xs">
-                            <span className="text-slate-500">Registro DIGEMID:</span>
-                            <span className="font-mono font-semibold text-[#071C21]">{eq.registroDiGEMID}</span>
+                        <div className="mt-4 space-y-2 border-t border-slate-100 pt-3 text-xs">
+                          <div className="flex items-center justify-between">
+                            <span className="text-slate-500 font-medium">Registro DIGEMID:</span>
+                            <span className="font-mono font-bold text-[#0B1528] bg-slate-100 px-2 py-0.5 rounded">{eq.registroDiGEMID}</span>
                           </div>
-                          <div className="flex items-center justify-between text-xs">
-                            <span className="text-slate-500">Garantía / Calibración:</span>
-                            <span className="font-semibold text-emerald-800">Cada {eq.maintenanceCycleYears > 0 ? `${eq.maintenanceCycleYears} años` : "Uso único"}</span>
+                          <div className="flex items-center justify-between">
+                            <span className="text-slate-500 font-medium">Garantía / Calibración:</span>
+                            <span className="font-bold text-[#0284C7]">Cada {eq.maintenanceCycleYears > 0 ? `${eq.maintenanceCycleYears} años` : "Uso único"}</span>
                           </div>
                         </div>
 
-                        <div className="mt-4 flex flex-wrap gap-1.5">
+                        <div className="mt-3.5 flex flex-wrap gap-1.5">
                           {eq.certifications.map((c) => (
-                            <span key={c} className="rounded-md bg-slate-50 border border-slate-200 px-2 py-0.5 text-[11px] text-slate-600 font-medium">
+                            <span key={c} className="rounded-md bg-slate-50 border border-slate-200 px-2 py-0.5 text-[10px] text-slate-600 font-bold">
                               {c}
                             </span>
                           ))}
@@ -902,17 +904,18 @@ export default function Home() {
 
                       <div className="mt-6 border-t border-slate-100 pt-4 flex items-center justify-between">
                         <div>
-                          <p className="text-[11px] uppercase tracking-wider text-slate-400 font-semibold">Precio de Referencia</p>
-                          <p className="text-2xl font-bold text-[#071C21]">{formatUSD(eq.priceUSD)}</p>
+                          <p className="text-[10px] uppercase tracking-wider text-slate-400 font-bold">Precio de Referencia</p>
+                          <p className="text-2xl font-black text-[#0B1528]">{formatUSD(eq.priceUSD)}</p>
                         </div>
                         <button
                           type="button"
                           onClick={() => {
                             setDataMessage(`Equipo ${eq.model} seleccionado como base para la propuesta comercial.`);
                           }}
-                          className="rounded-full bg-[#0B6E4F] px-4 py-2 text-xs font-semibold text-white shadow-sm transition hover:bg-[#0A5F44]"
+                          className="rounded-xl bg-[#0B1528] px-4 py-2 text-xs font-bold text-white shadow-xs transition hover:bg-[#0284C7] flex items-center gap-1.5"
                         >
-                          Usar en propuesta
+                          Usar en cotización
+                          <ArrowRight className="h-3.5 w-3.5" />
                         </button>
                       </div>
                     </div>
@@ -925,36 +928,36 @@ export default function Home() {
             {currentTab === "configuracion" && (
               <section className="space-y-6">
                 <div>
-                  <h2 className="font-serif text-2xl font-bold text-[#071C21]">Configuración y Archivos de la IA</h2>
-                  <p className="text-sm text-slate-600">
+                  <h2 className="font-sans text-2xl font-black text-[#0B1528] tracking-tight">Configuración y Archivos de la IA</h2>
+                  <p className="text-xs text-slate-500 mt-1">
                     Sube documentos normativos, certificados DIGEMID y guías clínicas para que la IA responda siempre con base legal verificada.
                   </p>
                 </div>
 
                 <div className="grid gap-6 xl:grid-cols-[1.2fr_0.8fr]">
                   {/* Lista de archivos que alimentan a la IA */}
-                  <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+                  <div className="rounded-2xl border border-slate-200/90 bg-white p-6 shadow-sm">
                     <div className="flex items-center justify-between mb-4">
                       <div className="flex items-center gap-2">
-                        <FileCheck className="h-5 w-5 text-[#0B6E4F]" />
-                        <h3 className="font-semibold text-[#071C21]">Archivos que guían a la IA</h3>
+                        <FileCheck className="h-5 w-5 text-[#0284C7]" />
+                        <h3 className="font-bold text-sm text-[#0B1528]">Archivos que guían a la IA</h3>
                       </div>
-                      <span className="text-xs font-semibold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-full">
+                      <span className="text-xs font-bold text-[#0369A1] bg-sky-50 border border-sky-200 px-3 py-1 rounded-full">
                         {regulatoryFiles.filter((f) => f.feedsAI).length} activos
                       </span>
                     </div>
 
                     <div className="space-y-3">
                       {regulatoryFiles.map((file) => (
-                        <div key={file.id} className="rounded-xl border border-slate-200 bg-[#F9FAF7] p-4 flex items-start justify-between gap-4">
+                        <div key={file.id} className="rounded-2xl border border-slate-200 bg-[#F8FAFC] p-4 flex items-start justify-between gap-4 transition hover:bg-white hover:border-sky-300">
                           <div className="flex items-start gap-3">
-                            <div className="p-2.5 rounded-lg bg-emerald-100 text-[#0B6E4F] shrink-0">
+                            <div className="p-2.5 rounded-xl bg-sky-100/70 text-[#0284C7] shrink-0 mt-0.5">
                               <FileText className="h-5 w-5" />
                             </div>
                             <div>
-                              <p className="font-semibold text-sm text-[#071C21]">{file.name}</p>
+                              <p className="font-bold text-sm text-[#0B1528]">{file.name}</p>
                               <p className="text-xs text-slate-600 mt-1">{file.description}</p>
-                              <div className="flex items-center gap-3 mt-2 text-[11px] text-slate-400 font-medium">
+                              <div className="flex items-center gap-3 mt-2 text-[10px] text-slate-400 font-bold uppercase tracking-wider">
                                 <span>{file.sizeKB} KB</span>
                                 <span>•</span>
                                 <span>Subido el {file.uploadedAt}</span>
@@ -962,7 +965,7 @@ export default function Home() {
                             </div>
                           </div>
 
-                          <label className="flex items-center gap-2 cursor-pointer shrink-0">
+                          <label className="flex items-center gap-2 cursor-pointer shrink-0 mt-1">
                             <input
                               type="checkbox"
                               checked={file.feedsAI}
@@ -971,9 +974,9 @@ export default function Home() {
                                   prev.map((f) => (f.id === file.id ? { ...f, feedsAI: !f.feedsAI } : f))
                                 );
                               }}
-                              className="h-4 w-4 rounded accent-[#0B6E4F]"
+                              className="h-4 w-4 rounded accent-[#0284C7]"
                             />
-                            <span className="text-xs text-slate-600 font-medium">Usar en IA</span>
+                            <span className="text-xs text-slate-700 font-bold">Usar en IA</span>
                           </label>
                         </div>
                       ))}
@@ -982,11 +985,11 @@ export default function Home() {
 
                   {/* Panel de Carga de nuevos archivos */}
                   <div className="space-y-6">
-                    <div className="rounded-2xl border-2 border-dashed border-slate-300 bg-white p-6 text-center shadow-sm">
-                      <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-emerald-50 text-[#0B6E4F]">
+                    <div className="rounded-2xl border-2 border-dashed border-sky-300 bg-white p-6 text-center shadow-xs">
+                      <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-sky-50 text-[#0284C7]">
                         <Upload className="h-6 w-6" />
                       </div>
-                      <h4 className="mt-3 font-semibold text-[#071C21]">Subir nuevo documento legal</h4>
+                      <h4 className="mt-3 font-bold text-sm text-[#0B1528]">Subir nuevo documento legal</h4>
                       <p className="mt-1 text-xs text-slate-500">PDF, Word o Texto de Resoluciones DIGEMID, fichas técnicas o consentimientos (máx 20MB)</p>
 
                       <div className="mt-4">
@@ -995,7 +998,7 @@ export default function Home() {
                           onClick={() => {
                             const newFile: RegulatoryFile = {
                               id: `reg-${Date.now()}`,
-                              name: "Resolucion_Directoril_DIGEMID_2026.pdf",
+                              name: "Resolucion_Directoral_DIGEMID_2026.pdf",
                               type: "registro_sanitario",
                               description: "Resolución oficial de droguería y comercialización de equipos de ozono en Perú.",
                               uploadedAt: "Hoy",
@@ -1005,20 +1008,20 @@ export default function Home() {
                             setRegulatoryFiles((prev) => [newFile, ...prev]);
                             setDataMessage("Documento regulatorio subido y activado para entrenamiento del agente IA.");
                           }}
-                          className="rounded-full bg-[#071C21] px-5 py-2.5 text-xs font-semibold text-white shadow-sm transition hover:bg-slate-800"
+                          className="rounded-xl bg-[#0B1528] px-5 py-2.5 text-xs font-bold text-white shadow-xs transition hover:bg-[#0284C7]"
                         >
                           Simular subida de archivo
                         </button>
                       </div>
                     </div>
 
-                    <div className="rounded-2xl border border-amber-200 bg-amber-50 p-5 text-amber-900 shadow-sm">
+                    <div className="rounded-2xl border border-orange-200 bg-orange-50/70 p-5 text-orange-950 shadow-xs">
                       <div className="flex items-center gap-2">
-                        <AlertTriangle className="h-4 w-4 text-amber-700" />
-                        <p className="text-xs font-bold uppercase tracking-wider">Regla de Cumplimiento Médico</p>
+                        <AlertTriangle className="h-4 w-4 text-[#F97316]" />
+                        <p className="text-xs font-black uppercase tracking-wider text-orange-900">Regla de Cumplimiento Médico SEDECAL</p>
                       </div>
-                      <p className="mt-2 text-xs leading-relaxed">
-                        Todo texto redactado por la IA citará la <strong>Declaración de Madrid</strong> y el número oficial de Registro Sanitario DIGEMID para evitar reclamos o sanciones médicas.
+                      <p className="mt-2 text-xs leading-relaxed text-orange-900/90">
+                        Todo texto redactado por la IA citará la <strong>Declaración de Madrid</strong> y el número oficial de Registro Sanitario DIGEMID para respaldar con rigor científico y normativo cada cotización.
                       </p>
                     </div>
                   </div>
@@ -1100,23 +1103,23 @@ export default function Home() {
               </div>
 
               {/* Sugerencia de la IA */}
-              <div className="rounded-2xl border border-amber-200 bg-amber-50 p-4">
-                <div className="mb-2 flex items-center gap-2 text-amber-800">
-                  <Bot className="h-4 w-4" />
-                  <p className="text-xs font-semibold uppercase tracking-[0.18em]">Sugerencia Comercial del Asistente</p>
+              <div className="rounded-2xl border border-sky-200 bg-sky-50/60 p-4">
+                <div className="mb-2 flex items-center gap-2 text-[#0369A1]">
+                  <Bot className="h-4 w-4 text-[#0284C7]" />
+                  <p className="text-xs font-black uppercase tracking-[0.18em]">Sugerencia Comercial SEDECAL</p>
                 </div>
-                <p className="text-xs leading-relaxed text-amber-900">{selectedLead.aiSuggestion}</p>
+                <p className="text-xs leading-relaxed text-slate-700">{selectedLead.aiSuggestion}</p>
               </div>
 
               {/* Botones de Acción */}
               <div className="rounded-2xl border border-slate-200 bg-white p-4">
-                <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">Acciones Recomendadas</p>
+                <p className="text-xs font-bold uppercase tracking-[0.2em] text-slate-500">Acciones Recomendadas</p>
                 <div className="mt-4 grid gap-2.5">
                   <button
                     type="button"
                     disabled={generatingType !== null}
                     onClick={() => handleGenerate("outbound")}
-                    className="inline-flex items-center justify-center gap-2 rounded-full bg-[#0B6E4F] px-4 py-2.5 text-xs font-semibold text-white transition hover:bg-[#0A5F44] disabled:opacity-60"
+                    className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#F97316] px-4 py-2.5 text-xs font-bold text-white shadow-xs transition hover:bg-[#EA580C] disabled:opacity-60"
                   >
                     <Sparkles className="h-3.5 w-3.5" />
                     {generatingType === "outbound" ? "Redactando mensaje..." : "Redactar mensaje de contacto"}
@@ -1126,9 +1129,9 @@ export default function Home() {
                     type="button"
                     disabled={generatingType !== null}
                     onClick={() => handleGenerate("roi")}
-                    className="inline-flex items-center justify-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2.5 text-xs font-semibold text-slate-700 transition hover:bg-slate-50 disabled:opacity-60"
+                    className="inline-flex items-center justify-center gap-2 rounded-xl border border-sky-200 bg-sky-50 px-4 py-2.5 text-xs font-bold text-[#0369A1] transition hover:bg-sky-100 disabled:opacity-60"
                   >
-                    <DollarSign className="h-3.5 w-3.5 text-emerald-700" />
+                    <DollarSign className="h-3.5 w-3.5 text-[#0284C7]" />
                     {generatingType === "roi" ? "Calculando retorno..." : "Generar propuesta económica (Retorno)"}
                   </button>
 
@@ -1136,9 +1139,9 @@ export default function Home() {
                     type="button"
                     disabled={generatingType !== null}
                     onClick={() => handleGenerate("dossier")}
-                    className="inline-flex items-center justify-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2.5 text-xs font-semibold text-slate-700 transition hover:bg-slate-50 disabled:opacity-60"
+                    className="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-xs font-bold text-slate-700 transition hover:bg-slate-50 disabled:opacity-60"
                   >
-                    <ShieldCheck className="h-3.5 w-3.5 text-emerald-700" />
+                    <ShieldCheck className="h-3.5 w-3.5 text-[#0284C7]" />
                     {generatingType === "dossier" ? "Preparando documentos..." : "Ver carpeta regulatoria DIGEMID"}
                   </button>
                 </div>
@@ -1233,23 +1236,32 @@ function MetricCard({
 }: {
   label: string;
   value: string;
-  accent: "emerald" | "amber" | "teal" | "green" | "deep" | "red";
+  accent: "sky" | "orange" | "blue" | "deep";
 }) {
   const styles = {
-    emerald: "bg-emerald-50 text-emerald-800 border border-emerald-100",
-    amber: "bg-amber-50 text-amber-800 border border-amber-100",
-    teal: "bg-teal-50 text-teal-800 border border-teal-100",
-    green: "bg-emerald-100 text-emerald-900 border border-emerald-200",
-    deep: "bg-slate-900 text-white border border-slate-800",
-    red: "bg-red-50 text-red-700 border border-red-100",
+    sky: "bg-white text-[#0B1528] border-l-4 border-l-[#0284C7] shadow-sm",
+    orange: "bg-white text-[#0B1528] border-l-4 border-l-[#F97316] shadow-sm",
+    blue: "bg-white text-[#0B1528] border-l-4 border-l-[#1E40AF] shadow-sm",
+    deep: "bg-[#0B1528] text-white border-l-4 border-l-[#38BDF8] shadow-md",
+  };
+
+  const badgeIconStyles = {
+    sky: "text-[#0284C7] bg-sky-50",
+    orange: "text-[#F97316] bg-orange-50",
+    blue: "text-[#1E40AF] bg-blue-50",
+    deep: "text-[#38BDF8] bg-white/10",
   };
 
   return (
-    <div className={`rounded-2xl p-4 shadow-sm ${styles[accent]}`}>
-      <p className="text-xs font-semibold uppercase tracking-[0.18em] opacity-80">{label}</p>
-      <div className="mt-3 flex items-end justify-between gap-2">
-        <p className="font-serif text-3xl font-bold">{value}</p>
-        <TrendingUp className="h-5 w-5 opacity-70" />
+    <div className={`rounded-2xl p-5 border border-slate-200/80 ${styles[accent]}`}>
+      <div className="flex items-center justify-between">
+        <p className="text-[11px] font-bold uppercase tracking-wider text-slate-500">{label}</p>
+        <span className={`p-1.5 rounded-lg ${badgeIconStyles[accent]}`}>
+          <TrendingUp className="h-4 w-4" />
+        </span>
+      </div>
+      <div className="mt-3 flex items-baseline justify-between gap-2">
+        <p className="font-sans text-3xl font-black tracking-tight">{value}</p>
       </div>
     </div>
   );
