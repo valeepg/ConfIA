@@ -13,9 +13,7 @@ import {
   Sparkles, 
   ShieldCheck, 
   FileSpreadsheet, 
-  Send,
-  AlertCircle,
-  ExternalLink
+  Send
 } from 'lucide-react';
 
 interface LeadDetailDrawerProps {
@@ -41,7 +39,7 @@ export const LeadDetailDrawer: React.FC<LeadDetailDrawerProps> = ({
       <div className="p-6 border-b border-gray-100 bg-[#FAF9F5] flex items-start justify-between">
         <div>
           <span className="text-[10px] font-bold uppercase tracking-wider bg-[#0E2E33] text-[#34D399] px-2.5 py-0.5 rounded-full inline-block mb-2">
-            Ficha de Inteligencia B2B
+            Ficha de la Clínica
           </span>
           <h2 className="font-serif font-bold text-xl text-[#071C21] leading-tight">
             {lead.name}
@@ -65,11 +63,11 @@ export const LeadDetailDrawer: React.FC<LeadDetailDrawerProps> = ({
 
       {/* Drawer Body */}
       <div className="flex-1 overflow-y-auto p-6 space-y-6">
-        {/* Decisor & Medical Staff info */}
+        {/* Contact Info */}
         <div className="bg-gray-50 p-3.5 rounded-xl border border-gray-200/70 space-y-2">
           <div className="flex items-center gap-2 text-xs text-gray-700">
             <User className="w-4 h-4 text-[#0D9488]" />
-            <span className="font-medium text-gray-500">Director médico:</span>
+            <span className="font-medium text-gray-500">Contacto principal:</span>
             <span className="font-semibold text-gray-900">{lead.directorMedico}</span>
           </div>
           <div className="flex items-center gap-2 text-xs text-gray-700">
@@ -78,19 +76,19 @@ export const LeadDetailDrawer: React.FC<LeadDetailDrawerProps> = ({
             <span className="font-semibold text-gray-900">{lead.doctorSpecialty}</span>
           </div>
           <div className="flex items-center justify-between pt-1 border-t border-gray-200 text-xs">
-            <span className="text-gray-500 font-medium">Calificación Algorítmica:</span>
+            <span className="text-gray-500 font-medium">Nivel de interés:</span>
             <span className="font-mono font-bold text-[#0D9488] bg-teal-50 px-2 py-0.5 rounded">
-              Score: {lead.score}/100
+              {lead.score}%
             </span>
           </div>
         </div>
 
-        {/* Section: Actividad en la OzonePedia (Telemetry) */}
+        {/* Section: What they've been reading */}
         <div>
           <div className="flex items-center justify-between mb-3">
             <h3 className="text-xs font-bold uppercase tracking-wider text-gray-500 flex items-center gap-1.5">
               <BookOpen className="w-3.5 h-3.5 text-[#D97706]" />
-              Actividad en la OzonePedia
+              Qué están leyendo en OzonePedia
             </h3>
             {lead.telemetryActivity.lastVisited && (
               <span className="text-[11px] text-amber-700 bg-amber-50 px-2 py-0.5 rounded-full font-medium">
@@ -106,10 +104,10 @@ export const LeadDetailDrawer: React.FC<LeadDetailDrawerProps> = ({
               </div>
               <div className="text-xs">
                 <p className="font-semibold text-[#071C21]">
-                  Protocolo de autohemoterapia mayor (AHTm)
+                  Autohemoterapia mayor (AHTm): cómo funciona
                 </p>
                 <p className="text-gray-500 mt-0.5 font-medium">
-                  {lead.telemetryActivity.ahtmReads} lectura{lead.telemetryActivity.ahtmReads !== 1 ? 's' : ''} registrada{lead.telemetryActivity.ahtmReads !== 1 ? 's' : ''}
+                  {lead.telemetryActivity.ahtmReads} lectura{lead.telemetryActivity.ahtmReads !== 1 ? 's' : ''}
                 </p>
               </div>
             </div>
@@ -120,10 +118,10 @@ export const LeadDetailDrawer: React.FC<LeadDetailDrawerProps> = ({
               </div>
               <div className="text-xs">
                 <p className="font-semibold text-[#071C21]">
-                  Hernia discal lumbar: protocolo de aplicación
+                  Hernia discal lumbar: tratamiento con ozono
                 </p>
                 <p className="text-gray-500 mt-0.5 font-medium">
-                  {lead.telemetryActivity.lumbarMinutes} min de permanencia de lectura
+                  {lead.telemetryActivity.lumbarMinutes} minutos leyendo este artículo
                 </p>
               </div>
             </div>
@@ -134,7 +132,7 @@ export const LeadDetailDrawer: React.FC<LeadDetailDrawerProps> = ({
                   <Search className="w-4 h-4" />
                 </div>
                 <div className="text-xs">
-                  <p className="font-medium text-gray-500">Término de búsqueda registrado:</p>
+                  <p className="font-medium text-gray-500">Buscaron en OzonePedia:</p>
                   <p className="font-semibold text-[#071C21] italic mt-0.5">
                     &ldquo;{lead.telemetryActivity.searchQuery}&rdquo;
                   </p>
@@ -144,15 +142,15 @@ export const LeadDetailDrawer: React.FC<LeadDetailDrawerProps> = ({
           </div>
         </div>
 
-        {/* Section: Sugerencia de la IA (Copiloto) */}
+        {/* Section: AI Suggestion */}
         <div className="bg-[#071C21] rounded-2xl p-5 text-white border border-[#0E2E33] shadow-md space-y-3.5">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-[#A7F3D0]">
               <Sparkles className="w-4 h-4 text-[#F59E0B]" />
-              Sugerencia de la IA
+              La IA sugiere
             </div>
             <span className="text-[10px] font-semibold bg-[#D97706] text-white px-2 py-0.5 rounded-full">
-              Borrador por aprobar
+              Necesita tu aprobación
             </span>
           </div>
 
@@ -166,7 +164,7 @@ export const LeadDetailDrawer: React.FC<LeadDetailDrawerProps> = ({
               className="w-full py-2.5 px-4 bg-[#059669] hover:bg-[#047857] text-white rounded-xl text-sm font-semibold transition-all flex items-center justify-center gap-2 shadow-sm"
             >
               <FileSpreadsheet className="w-4 h-4" />
-              <span>Revisar propuesta ROI (1 Clic)</span>
+              <span>Ver cotización y ganancias</span>
             </button>
 
             <div className="grid grid-cols-2 gap-2">
@@ -175,7 +173,7 @@ export const LeadDetailDrawer: React.FC<LeadDetailDrawerProps> = ({
                 className="py-2 px-3 bg-[#0E2E33] hover:bg-[#143B42] text-gray-200 border border-[#10B981]/30 rounded-xl text-xs font-semibold transition-all flex items-center justify-center gap-1.5"
               >
                 <ShieldCheck className="w-3.5 h-3.5 text-[#34D399]" />
-                <span>Dossier DIGEMID</span>
+                <span>Carpeta DIGEMID</span>
               </button>
 
               <button
@@ -183,7 +181,7 @@ export const LeadDetailDrawer: React.FC<LeadDetailDrawerProps> = ({
                 className="py-2 px-3 bg-[#0E2E33] hover:bg-[#143B42] text-gray-200 border border-[#38BDF8]/30 rounded-xl text-xs font-semibold transition-all flex items-center justify-center gap-1.5"
               >
                 <Send className="w-3.5 h-3.5 text-[#38BDF8]" />
-                <span>Borrador Mensaje</span>
+                <span>Mensaje sugerido</span>
               </button>
             </div>
           </div>
@@ -194,13 +192,13 @@ export const LeadDetailDrawer: React.FC<LeadDetailDrawerProps> = ({
       <div className="p-4 border-t border-gray-100 bg-gray-50 flex items-center justify-between text-xs text-gray-500">
         <span className="flex items-center gap-1">
           <ShieldCheck className="w-4 h-4 text-emerald-600" />
-          Human-in-the-Loop activo
+          Tú apruebas todo antes de que se envíe
         </span>
         <button
           onClick={onClose}
           className="text-gray-600 hover:text-gray-900 font-semibold"
         >
-          Cerrar panel
+          Cerrar
         </button>
       </div>
     </div>

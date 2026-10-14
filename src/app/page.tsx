@@ -30,9 +30,6 @@ import {
   LayoutGrid, 
   List, 
   Plus, 
-  SlidersHorizontal,
-  Bell,
-  Sparkles,
   ShieldCheck,
   Check
 } from 'lucide-react';
@@ -55,17 +52,17 @@ export default function ConfiaCRM() {
   // Alert banner state
   const [alertVisible, setAlertVisible] = useState(true);
   const [alertMessage, setAlertMessage] = useState(
-    'Alerta nueva: Clínica Santa Rosa Sur está leyendo protocolos en la OzonePedia.'
+    'Clínica Santa Rosa Sur está leyendo artículos de ozonoterapia en la OzonePedia ahora mismo.'
   );
 
-  // Modals state (RF-05 Human-in-the-Loop)
+  // Modals state
   const [roiModalOpen, setRoiModalOpen] = useState(false);
   const [dossierModalOpen, setDossierModalOpen] = useState(false);
   const [outboundModalOpen, setOutboundModalOpen] = useState(false);
   const [ozonePediaOpen, setOzonePediaOpen] = useState(false);
   const [modalLead, setModalLead] = useState<Lead | null>(null);
 
-  // Success Toast notification
+  // Toast notification
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
   const showToast = (msg: string) => {
@@ -81,32 +78,32 @@ export default function ConfiaCRM() {
 
   const pipelineMetrics = [
     {
-      label: 'Prospectos Activos',
+      label: 'Clínicas en Seguimiento',
       value: activeLeadsCount,
       highlight: 'teal' as const,
       icon: <Users className="w-5 h-5 text-teal-600" />,
-      subtitle: 'En pipeline',
+      subtitle: 'En proceso',
     },
     {
-      label: 'Borradores por Aprobar',
+      label: 'Sugerencias por Revisar',
       value: pendingDraftsCount,
       highlight: 'amber' as const,
       icon: <FileEdit className="w-5 h-5 text-amber-500" />,
-      subtitle: 'Human-in-the-Loop',
+      subtitle: 'De la IA',
     },
     {
-      label: 'Propuestas Enviadas',
+      label: 'Cotizaciones Enviadas',
       value: proposalsSentCount,
       highlight: 'default' as const,
       icon: <Send className="w-5 h-5 text-sky-600" />,
-      subtitle: 'En evaluación',
+      subtitle: 'Esperando respuesta',
     },
     {
       label: 'Clientes Activos',
       value: activeClientsCount,
       highlight: 'emerald' as const,
       icon: <CheckCircle2 className="w-5 h-5 text-emerald-600" />,
-      subtitle: 'Comodato OaaS',
+      subtitle: 'Equipo instalado',
     },
   ];
 
@@ -123,13 +120,19 @@ export default function ConfiaCRM() {
 
   // Stage transition handler
   const handleMoveLeadStatus = (leadId: string, newStatus: PipelineStatus) => {
+    const statusNames: Record<PipelineStatus, string> = {
+      descubierto: 'Identificada',
+      contactado: 'En conversación',
+      propuesta_enviada: 'Cotización enviada',
+      cierre: 'Cliente activo',
+    };
     setLeads((prev) =>
       prev.map((l) => (l.id === leadId ? { ...l, status: newStatus } : l))
     );
-    showToast(`Estado de prospecto actualizado a: ${newStatus.replace('_', ' ').toUpperCase()}`);
+    showToast(`Clínica movida a: ${statusNames[newStatus]}`);
   };
 
-  // RF-05 1-Click Approval Handlers
+  // Approval Handlers
   const handleApproveRoi = (leadId: string) => {
     setLeads((prev) =>
       prev.map((l) =>
@@ -138,12 +141,12 @@ export default function ConfiaCRM() {
               ...l,
               draftApproved: true,
               status: 'propuesta_enviada',
-              statusNote: 'Propuesta ROI enviada tras aprobación humana',
+              statusNote: 'Cotización enviada — esperando respuesta',
             }
           : l
       )
     );
-    showToast('¡Propuesta ROI aprobada y enviada a la IPRESS (1 Clic)!');
+    showToast('¡Cotización aprobada y enviada a la clínica!');
     if (selectedLead?.id === leadId) {
       setSelectedLead((prev) => (prev ? { ...prev, draftApproved: true, status: 'propuesta_enviada' } : null));
     }
@@ -155,12 +158,12 @@ export default function ConfiaCRM() {
         l.id === leadId
           ? {
               ...l,
-              statusNote: 'Dossier técnico DIGEMID homologado y enviado',
+              statusNote: 'Carpeta DIGEMID enviada — en revisión técnica',
             }
           : l
       )
     );
-    showToast('Expediente técnico DIGEMID adjuntado exitosamente');
+    showToast('Carpeta DIGEMID enviada a la clínica');
   };
 
   const handleApproveOutbound = (leadId: string) => {
@@ -171,28 +174,28 @@ export default function ConfiaCRM() {
               ...l,
               draftApproved: true,
               status: 'contactado',
-              statusNote: 'Primer contacto outbound enviado',
+              statusNote: 'Primer mensaje enviado',
             }
           : l
       )
     );
-    showToast('Mensaje de contacto outbound aprobado y despachado (1 Clic)');
+    showToast('Mensaje aprobado y enviado');
   };
 
   const handleApproveReminder = (consumableId: string) => {
     setConsumables((prev) =>
       prev.map((c) =>
         c.id === consumableId
-          ? { ...c, status: 'al_dia', urgentAiReminder: false, lastOrderText: 'Despacho generado hoy' }
+          ? { ...c, status: 'al_dia', urgentAiReminder: false, lastOrderText: 'Pedido generado hoy' }
           : c
       )
     );
-    showToast('Recordatorio y pedido de kits de insumos despachado exitosamente');
+    showToast('Recordatorio enviado y pedido de insumos coordinado');
   };
 
   // Telemetry Trigger from OzonePedia
   const handleTriggerTelemetry = (clinicName: string) => {
-    setAlertMessage(`Alerta nueva: ${clinicName} está leyendo protocolos en la OzonePedia.`);
+    setAlertMessage(`${clinicName} está leyendo artículos de ozonoterapia en la OzonePedia ahora mismo.`);
     setAlertVisible(true);
     setLeads((prev) =>
       prev.map((l) =>
@@ -209,7 +212,7 @@ export default function ConfiaCRM() {
           : l
       )
     );
-    showToast(`Telemetría recibida: Lectura registrada desde ${clinicName}`);
+    showToast(`Lectura detectada desde ${clinicName}`);
   };
 
   return (
@@ -217,20 +220,20 @@ export default function ConfiaCRM() {
       {/* Sidebar */}
       <Sidebar
         currentTab={currentTab}
-        onSelectTab={(tab) => setCurrentTab(tab as any)}
+        onSelectTab={(tab) => setCurrentTab(tab as typeof currentTab)}
         onOpenOzonePedia={() => setOzonePediaOpen(true)}
       />
 
-      {/* Main Content Workspace */}
+      {/* Main Content */}
       <main className="flex-1 flex flex-col min-w-0 overflow-y-auto">
-        {/* Top App Bar */}
+        {/* Top Bar */}
         <header className="bg-white border-b border-[#E5E7EB] px-8 py-4 sticky top-0 z-20 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <h2 className="font-serif font-bold text-xl text-[#071C21]">
-              {currentTab === 'pipeline' && 'Pipeline B2B'}
-              {currentTab === 'prospectos' && 'Directorio de IPRESS Prospectadas'}
-              {currentTab === 'posventa' && 'Posventa y Retención'}
-              {currentTab === 'documentos' && 'Repositorio DIGEMID'}
+              {currentTab === 'pipeline' && 'Seguimiento de Clínicas'}
+              {currentTab === 'prospectos' && 'Todas las Clínicas'}
+              {currentTab === 'posventa' && 'Clientes y Equipos'}
+              {currentTab === 'documentos' && 'Documentos DIGEMID'}
             </h2>
             <span className="text-xs bg-[#FEF3C7] text-[#92400E] border border-[#FDE68A] font-medium px-2.5 py-0.5 rounded-full">
               Datos de ejemplo
@@ -243,14 +246,14 @@ export default function ConfiaCRM() {
               <Search className="w-4 h-4 absolute left-3 top-2.5 text-gray-400" />
               <input
                 type="text"
-                placeholder="Buscar clínica o director médico..."
+                placeholder="Buscar clínica o doctor..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="w-full pl-9 pr-3 py-1.5 bg-[#FAF9F5] text-xs text-[#071C21] rounded-xl border border-gray-300 focus:outline-hidden focus:border-[#059669] focus:bg-white transition-all"
               />
             </div>
 
-            {/* Quick action button */}
+            {/* Add new clinic */}
             <button
               onClick={() => {
                 const newLead: Lead = {
@@ -266,15 +269,15 @@ export default function ConfiaCRM() {
                   hasAiDraft: false,
                   draftApproved: false,
                   telemetryActivity: { ahtmReads: 0, lumbarMinutes: 0 },
-                  aiSuggestion: 'Nuevo prospecto. Generar borrador de prospección OaaS.',
+                  aiSuggestion: 'Clínica nueva. Preparar mensaje de primer contacto.',
                 };
                 setLeads([newLead, ...leads]);
-                showToast('Nuevo prospecto registrado en Descubierto');
+                showToast('Nueva clínica agregada');
               }}
               className="px-4 py-2 bg-[#059669] hover:bg-[#047857] text-white text-xs font-semibold rounded-xl flex items-center gap-1.5 shadow-xs transition-all shrink-0"
             >
               <Plus className="w-4 h-4" />
-              <span>Nuevo prospecto</span>
+              <span>Agregar clínica</span>
             </button>
           </div>
         </header>
@@ -291,13 +294,13 @@ export default function ConfiaCRM() {
             </div>
           )}
 
-          {/* VIEW: Pipeline B2B (RF-03) */}
+          {/* VIEW: Seguimiento de Clínicas */}
           {(currentTab === 'pipeline' || currentTab === 'prospectos') && (
             <div>
               {/* Top KPI Cards */}
               <MetricCards metrics={pipelineMetrics} />
 
-              {/* Real-time Telemetry Alert Banner */}
+              {/* Alert Banner */}
               {alertVisible && (
                 <IntentAlertBanner
                   message={alertMessage}
@@ -309,10 +312,10 @@ export default function ConfiaCRM() {
                 />
               )}
 
-              {/* View Switcher Controls (Kanban / Table) */}
+              {/* View Switcher */}
               <div className="flex items-center justify-between mb-4">
                 <div className="text-xs text-gray-500 font-medium">
-                  Mostrando <strong>{filteredLeads.length}</strong> clínicas en prospección
+                  Mostrando <strong>{filteredLeads.length}</strong> clínicas
                 </div>
 
                 <div className="bg-[#EFECE6] p-1 rounded-xl flex items-center gap-1 border border-[#E2DDD3]">
@@ -325,7 +328,7 @@ export default function ConfiaCRM() {
                     }`}
                   >
                     <LayoutGrid className="w-3.5 h-3.5" />
-                    <span>Kanban</span>
+                    <span>Tarjetas</span>
                   </button>
                   <button
                     onClick={() => setPipelineLayout('table')}
@@ -368,7 +371,7 @@ export default function ConfiaCRM() {
             </div>
           )}
 
-          {/* VIEW: Posventa y Retención (RF-04) */}
+          {/* VIEW: Clientes y Equipos */}
           {currentTab === 'posventa' && (
             <PosventaView
               consumables={consumables}
@@ -378,33 +381,33 @@ export default function ConfiaCRM() {
             />
           )}
 
-          {/* VIEW: Repositorio DIGEMID */}
+          {/* VIEW: Documentos DIGEMID */}
           {currentTab === 'documentos' && (
             <div className="bg-white rounded-2xl p-6 border border-[#E5E7EB] shadow-xs space-y-4">
               <div className="border-b border-gray-100 pb-3">
                 <h3 className="font-serif font-bold text-lg text-[#071C21]">
-                  Carpeta Técnica Regulatoria DIGEMID
+                  Documentos del Equipo — DIGEMID y SEDECAL
                 </h3>
                 <p className="text-xs text-gray-500">
-                  Documentación oficial para homologación institucional en IPRESS públicas y privadas
+                  Documentación oficial que se envía a las clínicas para que puedan verificar que el equipo es legal y certificado.
                 </p>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div className="p-4 bg-gray-50 rounded-xl border border-gray-200">
                   <ShieldCheck className="w-6 h-6 text-emerald-600 mb-2" />
-                  <h4 className="font-bold text-sm text-gray-800">Registro Sanitario Clase IIb</h4>
-                  <p className="text-xs text-gray-500 mt-1">Código DM-2024-O3-CLASE-IIB-7891 con fotómetro digital calibrado.</p>
+                  <h4 className="font-bold text-sm text-gray-800">Registro Sanitario</h4>
+                  <p className="text-xs text-gray-500 mt-1">Ozonette DB7384E y Ozonobaric P DB7428E — registrados ante DIGEMID.</p>
                 </div>
                 <div className="p-4 bg-gray-50 rounded-xl border border-gray-200">
                   <ShieldCheck className="w-6 h-6 text-teal-600 mb-2" />
-                  <h4 className="font-bold text-sm text-gray-800">Certificación BPM Droguería</h4>
-                  <p className="text-xs text-gray-500 mt-1">Buenas Prácticas de Manufactura y Almacenamiento certificadas.</p>
+                  <h4 className="font-bold text-sm text-gray-800">Droguería Autorizada</h4>
+                  <p className="text-xs text-gray-500 mt-1">Tecnology Care SRL — importador autorizado por DIGEMID.</p>
                 </div>
                 <div className="p-4 bg-gray-50 rounded-xl border border-gray-200">
                   <ShieldCheck className="w-6 h-6 text-sky-600 mb-2" />
-                  <h4 className="font-bold text-sm text-gray-800">Protocolo ISCO3 / Madrid</h4>
-                  <p className="text-xs text-gray-500 mt-1">Guías clínicas universales y tabla de concentraciones 5-60 &micro;g/mL.</p>
+                  <h4 className="font-bold text-sm text-gray-800">Declaración de Madrid</h4>
+                  <p className="text-xs text-gray-500 mt-1">Protocolo de uso clínico del ozono médico, aceptado internacionalmente por ISCO3.</p>
                 </div>
               </div>
             </div>
@@ -412,7 +415,7 @@ export default function ConfiaCRM() {
         </div>
       </main>
 
-      {/* Slid-in Lead Detail Drawer */}
+      {/* Lead Detail Drawer */}
       <LeadDetailDrawer
         lead={selectedLead}
         onClose={() => setSelectedLead(null)}
@@ -430,7 +433,7 @@ export default function ConfiaCRM() {
         }}
       />
 
-      {/* Human-in-the-Loop RF-05 Modals */}
+      {/* Approval Modals */}
       <RoiApprovalModal
         lead={modalLead}
         isOpen={roiModalOpen}
@@ -452,7 +455,7 @@ export default function ConfiaCRM() {
         onApprove={handleApproveOutbound}
       />
 
-      {/* OzonePedia Wiki Preview & Live Telemetry Simulator */}
+      {/* OzonePedia Hub */}
       <OzonePediaModal
         isOpen={ozonePediaOpen}
         onClose={() => setOzonePediaOpen(false)}

@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Bell, ArrowRight, Sparkles, X } from 'lucide-react';
+import { Bell, ArrowRight, X } from 'lucide-react';
 
 interface IntentAlertBannerProps {
   message: string;
@@ -26,10 +26,7 @@ export const IntentAlertBanner: React.FC<IntentAlertBannerProps> = ({
         <div className="flex-1">
           <div className="flex items-center gap-2">
             <span className="text-[11px] font-bold uppercase tracking-wider text-[#B45309] bg-[#FDE68A] px-2 py-0.5 rounded">
-              Radar de Intención
-            </span>
-            <span className="text-xs text-[#78350F] font-medium hidden sm:inline">
-              Telemetría en tiempo real
+              Actividad detectada
             </span>
           </div>
           <p className="text-sm font-medium text-[#78350F] mt-0.5 group-hover:text-[#92400E] flex items-center gap-1.5">
@@ -37,7 +34,7 @@ export const IntentAlertBanner: React.FC<IntentAlertBannerProps> = ({
           </p>
         </div>
         <div className="hidden sm:flex items-center gap-1 text-xs font-semibold text-[#B45309] group-hover:translate-x-1 transition-transform">
-          <span>Abrir detalle</span>
+          <span>Ver detalle</span>
           <ArrowRight className="w-3.5 h-3.5" />
         </div>
       </div>
@@ -46,7 +43,7 @@ export const IntentAlertBanner: React.FC<IntentAlertBannerProps> = ({
         <button
           onClick={onDismiss}
           className="text-amber-600 hover:text-amber-800 p-1 rounded-md hover:bg-amber-100 transition-colors"
-          title="Ocultar alerta"
+          title="Ocultar"
         >
           <X className="w-4 h-4" />
         </button>

@@ -9,7 +9,7 @@ export interface TelemetryActivity {
 
 export interface RoiProposal {
   equipmentModel: string;
-  monthlyLeaseCost: number; // 0 for OaaS comodato
+  monthlyLeaseCost: number;
   minimumKitsPerMonth: number;
   costPerSession: number;
   patientPriceAvg: number;
@@ -77,6 +77,9 @@ export interface MaintenanceItem {
   task: string;
   dueInText: string;
   urgency: 'high' | 'medium' | 'low';
+  equipmentModel?: string;
+  installDate?: string;
+  nextMajorService?: string;
 }
 
 export interface TrainingProgress {

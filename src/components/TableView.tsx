@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { Lead, PipelineStatus } from '@/types';
-import { MapPin, Sparkles, Eye, ArrowUpDown, ChevronRight } from 'lucide-react';
+import { MapPin, Sparkles, ChevronRight } from 'lucide-react';
 
 interface TableViewProps {
   leads: Lead[];
@@ -12,10 +12,10 @@ interface TableViewProps {
 }
 
 const STATUS_LABELS: Record<PipelineStatus, { label: string; badgeClass: string }> = {
-  descubierto: { label: 'Descubierto', badgeClass: 'bg-slate-100 text-slate-700 border-slate-300' },
-  contactado: { label: 'Contactado', badgeClass: 'bg-amber-50 text-amber-800 border-amber-300' },
-  propuesta_enviada: { label: 'Propuesta enviada', badgeClass: 'bg-sky-50 text-sky-800 border-sky-300' },
-  cierre: { label: 'Cierre (Comodato)', badgeClass: 'bg-emerald-50 text-emerald-800 border-emerald-300' },
+  descubierto: { label: 'Identificada', badgeClass: 'bg-slate-100 text-slate-700 border-slate-300' },
+  contactado: { label: 'En conversación', badgeClass: 'bg-amber-50 text-amber-800 border-amber-300' },
+  propuesta_enviada: { label: 'Cotización enviada', badgeClass: 'bg-sky-50 text-sky-800 border-sky-300' },
+  cierre: { label: 'Cliente activo', badgeClass: 'bg-emerald-50 text-emerald-800 border-emerald-300' },
 };
 
 export const TableView: React.FC<TableViewProps> = ({
@@ -30,14 +30,14 @@ export const TableView: React.FC<TableViewProps> = ({
         <table className="w-full text-left text-sm text-[#0F2F38]">
           <thead className="bg-[#FAF9F5] text-xs font-semibold uppercase tracking-wider text-gray-500 border-b border-gray-200">
             <tr>
-              <th className="py-3.5 px-4">Clínica / IPRESS</th>
+              <th className="py-3.5 px-4">Clínica</th>
               <th className="py-3.5 px-4">Ubicación</th>
               <th className="py-3.5 px-4">Especialidad</th>
-              <th className="py-3.5 px-4">Score B2B</th>
-              <th className="py-3.5 px-4">Etapa Pipeline</th>
-              <th className="py-3.5 px-4">Telemetría Hub</th>
-              <th className="py-3.5 px-4">Copiloto IA</th>
-              <th className="py-3.5 px-4 text-right">Acción</th>
+              <th className="py-3.5 px-4">Interés</th>
+              <th className="py-3.5 px-4">Etapa</th>
+              <th className="py-3.5 px-4">Lecturas en OzonePedia</th>
+              <th className="py-3.5 px-4">Asistente IA</th>
+              <th className="py-3.5 px-4 text-right">Ver</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-100">
@@ -82,7 +82,7 @@ export const TableView: React.FC<TableViewProps> = ({
                         />
                       </div>
                       <span className="font-mono text-xs font-bold text-[#0D9488]">
-                        {lead.score}
+                        {lead.score}%
                       </span>
                     </div>
                   </td>
@@ -97,11 +97,11 @@ export const TableView: React.FC<TableViewProps> = ({
                     {lead.telemetryAlert ? (
                       <span className="text-[11px] font-bold text-[#B45309] bg-[#FEF3C7] px-2 py-0.5 rounded-full border border-[#FDE68A] flex items-center gap-1 w-max">
                         <span className="w-1.5 h-1.5 rounded-full bg-[#D97706] animate-pulse"></span>
-                        Lectura activa ({lead.telemetryActivity.lumbarMinutes} min)
+                        Leyendo ahora ({lead.telemetryActivity.lumbarMinutes} min)
                       </span>
                     ) : (
                       <span className="text-xs text-gray-400">
-                        {lead.telemetryActivity.ahtmReads > 0 ? `${lead.telemetryActivity.ahtmReads} consultas` : 'Sin actividad'}
+                        {lead.telemetryActivity.ahtmReads > 0 ? `${lead.telemetryActivity.ahtmReads} artículos` : 'Sin actividad'}
                       </span>
                     )}
                   </td>
@@ -116,7 +116,7 @@ export const TableView: React.FC<TableViewProps> = ({
                         className="text-xs bg-[#FEF3C7] hover:bg-[#FDE68A] text-[#92400E] border border-[#F59E0B] px-2.5 py-1 rounded-lg font-semibold flex items-center gap-1"
                       >
                         <Sparkles className="w-3 h-3 text-[#D97706]" />
-                        Por Aprobar
+                        Revisar
                       </button>
                     ) : (
                       <span className="text-xs text-gray-400">Al día</span>

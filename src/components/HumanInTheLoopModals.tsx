@@ -1,19 +1,13 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Lead, ConsumableItem } from '@/types';
+import { Lead } from '@/types';
 import { 
   X, 
   Check, 
   ShieldCheck, 
-  FileSpreadsheet, 
   Send, 
-  FileText, 
   Sparkles, 
-  AlertTriangle,
-  ArrowRight,
-  Download,
-  Building,
   CheckCircle2
 } from 'lucide-react';
 
@@ -35,7 +29,7 @@ export const RoiApprovalModal: React.FC<RoiModalProps> = ({
   if (!isOpen || !lead) return null;
 
   const proposal = lead.roiProposal || {
-    equipmentModel: 'Generador O3 Médico Sistémico OzoLife Digital Clase IIb',
+    equipmentModel: 'Ozonette — Generador SEDECAL (Clase IIb, marcado CE)',
     monthlyLeaseCost: 0,
     minimumKitsPerMonth: 25,
     costPerSession: 35,
@@ -61,15 +55,15 @@ export const RoiApprovalModal: React.FC<RoiModalProps> = ({
           <div>
             <div className="flex items-center gap-2 mb-1">
               <span className="text-[10px] font-bold uppercase tracking-wider bg-[#059669] text-white px-2 py-0.5 rounded-full">
-                Human-in-the-Loop RF-05
+                Necesita tu aprobación
               </span>
-              <span className="text-xs text-teal-300 font-mono">Modelo OaaS (OpEx)</span>
+              <span className="text-xs text-teal-300">Alquiler con insumos</span>
             </div>
             <h2 className="font-serif font-bold text-xl text-[#FAF9F5]">
-              Propuesta Económica &amp; ROI Clínico
+              Cotización y ganancia estimada
             </h2>
             <p className="text-xs text-gray-300 mt-0.5">
-              Generada por Copiloto IA para: <strong className="text-white">{lead.name}</strong> ({lead.district})
+              Preparada por la IA para: <strong className="text-white">{lead.name}</strong> ({lead.district})
             </p>
           </div>
 
@@ -83,56 +77,56 @@ export const RoiApprovalModal: React.FC<RoiModalProps> = ({
 
         {/* Content */}
         <div className="p-6 space-y-6 max-h-[75vh] overflow-y-auto">
-          {/* Clinical equipment & terms */}
+          {/* Equipment & Terms */}
           <div className="grid grid-cols-2 gap-4">
             <div className="bg-gray-50 p-4 rounded-xl border border-gray-200">
               <span className="text-xs font-semibold text-gray-500 uppercase tracking-wider block mb-1">
-                Tecnología Biomédica
+                Equipo Médico
               </span>
               <p className="font-bold text-sm text-[#071C21]">
                 {proposal.equipmentModel}
               </p>
               <div className="mt-2 flex items-center gap-1.5 text-xs text-[#059669] font-medium">
                 <ShieldCheck className="w-4 h-4" />
-                <span>Registro Sanitario DIGEMID Clase IIb</span>
+                <span>Registro DIGEMID DB7384E</span>
               </div>
             </div>
 
             <div className="bg-emerald-50/60 p-4 rounded-xl border border-emerald-200">
               <span className="text-xs font-semibold text-emerald-800 uppercase tracking-wider block mb-1">
-                Modalidad OaaS (Comodato)
+                Modelo de Alquiler
               </span>
               <p className="font-bold text-sm text-emerald-950">
-                Inversión Inicial CapEx: S/ 0.00
+                Sin inversión inicial: S/ 0.00
               </p>
               <p className="text-xs text-emerald-700 mt-1">
-                Condicionado a consumo mínimo de <strong>{proposal.minimumKitsPerMonth} kits AHTm/mes</strong>.
+                La clínica solo compra un mínimo de <strong>{proposal.minimumKitsPerMonth} kits de insumos al mes</strong>.
               </p>
             </div>
           </div>
 
-          {/* ROI Matrix */}
+          {/* Revenue Projection */}
           <div>
             <h3 className="text-xs font-bold uppercase tracking-wider text-gray-500 mb-3">
-              Proyección de Rentabilidad para la IPRESS
+              ¿Cuánto puede ganar la clínica?
             </h3>
             <div className="grid grid-cols-3 gap-3">
               <div className="bg-gray-50 p-3.5 rounded-xl border border-gray-200 text-center">
-                <span className="text-[11px] text-gray-500 font-medium">Costo Insumo / Sesión</span>
+                <span className="text-[11px] text-gray-500 font-medium">Costo de insumos por sesión</span>
                 <p className="font-mono text-lg font-bold text-gray-800 mt-1">S/ {proposal.costPerSession}</p>
-                <span className="text-[10px] text-gray-400">Kit estéril + línea</span>
+                <span className="text-[10px] text-gray-400">Kit + línea estéril</span>
               </div>
 
               <div className="bg-gray-50 p-3.5 rounded-xl border border-gray-200 text-center">
-                <span className="text-[11px] text-gray-500 font-medium">Tarifa Promedio Paciente</span>
+                <span className="text-[11px] text-gray-500 font-medium">Le cobran al paciente</span>
                 <p className="font-mono text-lg font-bold text-teal-700 mt-1">S/ {proposal.patientPriceAvg}</p>
-                <span className="text-[10px] text-gray-400">Arancel privado Lima</span>
+                <span className="text-[10px] text-gray-400">Precio promedio Lima</span>
               </div>
 
               <div className="bg-teal-50 p-3.5 rounded-xl border border-teal-200 text-center">
-                <span className="text-[11px] text-teal-800 font-semibold">Margen Neto Estimado</span>
+                <span className="text-[11px] text-teal-800 font-semibold">Ganancia estimada</span>
                 <p className="font-mono text-xl font-bold text-[#0D9488] mt-1">S/ {proposal.estimatedNetMonthly}</p>
-                <span className="text-[10px] text-teal-600 font-medium">/ mes (40 sesiones)</span>
+                <span className="text-[10px] text-teal-600 font-medium">al mes ({proposal.projectedSessionsMonth} sesiones)</span>
               </div>
             </div>
           </div>
@@ -141,12 +135,12 @@ export const RoiApprovalModal: React.FC<RoiModalProps> = ({
           <div className="p-3 bg-amber-50 border border-amber-200 rounded-xl flex items-start gap-3 text-xs text-amber-800">
             <Sparkles className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
             <div>
-              <strong>Guardarraíl de Integridad:</strong> Las tarifas e insumos están calculados con base en las listas de precios vigentes. El texto regulatorio cita la Declaración de Madrid (ISCO3) y normativas DIGEMID Clase IIb.
+              <strong>Nota:</strong> Los precios e insumos están basados en las listas de precios vigentes de Tecnocare. Los datos regulatorios se toman de la Declaración de Madrid (ISCO3) y de los registros DIGEMID del equipo SEDECAL.
             </div>
           </div>
         </div>
 
-        {/* Footer with 1-click Approval button */}
+        {/* Footer */}
         <div className="bg-gray-50 p-5 border-t border-gray-200 flex items-center justify-between">
           <button
             onClick={onClose}
@@ -168,12 +162,12 @@ export const RoiApprovalModal: React.FC<RoiModalProps> = ({
               {approved ? (
                 <>
                   <CheckCircle2 className="w-4 h-4 animate-spin" />
-                  <span>¡Propuesta Aprobada y Registrada!</span>
+                  <span>¡Cotización aprobada y enviada!</span>
                 </>
               ) : (
                 <>
                   <Check className="w-4 h-4" />
-                  <span>Aprobar y Enviar Propuesta (1 Clic)</span>
+                  <span>Aprobar y enviar cotización</span>
                 </>
               )}
             </button>
@@ -208,14 +202,11 @@ export const DossierModal: React.FC<DossierModalProps> = ({
               <span className="text-[10px] font-bold uppercase tracking-wider bg-teal-600 text-white px-2 py-0.5 rounded-full">
                 Carpeta Regulatoria
               </span>
-              <span className="text-xs text-teal-300">Normativa DIGEMID &middot; MINSA</span>
+              <span className="text-xs text-teal-300">DIGEMID &middot; Droguería Autorizada</span>
             </div>
             <h2 className="font-serif font-bold text-xl text-[#FAF9F5]">
-              Dossier Técnico DIGEMID
+              Documentos del equipo para {lead.name}
             </h2>
-            <p className="text-xs text-gray-300 mt-0.5">
-              Destinatario: Dirección Técnica de {lead.name}
-            </p>
           </div>
 
           <button onClick={onClose} className="text-gray-400 hover:text-white p-1">
@@ -224,37 +215,41 @@ export const DossierModal: React.FC<DossierModalProps> = ({
         </div>
 
         <div className="p-6 space-y-4 max-h-[70vh] overflow-y-auto">
+          <p className="text-xs text-gray-600 mb-2">
+            Estos documentos se envían a la clínica para que su equipo técnico o de compras pueda verificar que el generador es legal y certificado.
+          </p>
+
           <div className="space-y-3">
             <div className="p-3 bg-gray-50 border border-gray-200 rounded-xl flex items-center justify-between">
               <div>
-                <p className="text-xs font-semibold text-gray-800">1. Registro Sanitario de Dispositivo Médico</p>
-                <p className="text-[11px] text-gray-500 font-mono">Código: DM-2024-O3-CLASE-IIB-7891 (Vigente)</p>
+                <p className="text-xs font-semibold text-gray-800">1. Registro Sanitario DIGEMID</p>
+                <p className="text-[11px] text-gray-500 font-mono">Código: DB7384E — Ozonette (SEDECAL)</p>
               </div>
-              <span className="text-xs font-bold text-emerald-700 bg-emerald-50 px-2 py-1 rounded">Homologado</span>
+              <span className="text-xs font-bold text-emerald-700 bg-emerald-50 px-2 py-1 rounded">Vigente</span>
             </div>
 
             <div className="p-3 bg-gray-50 border border-gray-200 rounded-xl flex items-center justify-between">
               <div>
-                <p className="text-xs font-semibold text-gray-800">2. Certificado de Calibración de Fotómetro</p>
-                <p className="text-[11px] text-gray-500">Laboratorio ISO/IEC 17025 &middot; ISCO3</p>
+                <p className="text-xs font-semibold text-gray-800">2. Certificado de calibración de fábrica</p>
+                <p className="text-[11px] text-gray-500">SEDECAL — ISO 13485 / ISO 17025</p>
               </div>
-              <span className="text-xs font-bold text-emerald-700 bg-emerald-50 px-2 py-1 rounded">Válido 12m</span>
+              <span className="text-xs font-bold text-emerald-700 bg-emerald-50 px-2 py-1 rounded">Válido</span>
             </div>
 
             <div className="p-3 bg-gray-50 border border-gray-200 rounded-xl flex items-center justify-between">
               <div>
-                <p className="text-xs font-semibold text-gray-800">3. Certificación BPM de Droguería Distribuidora</p>
-                <p className="text-[11px] text-gray-500">Buenas Prácticas de Manufactura y Almacenamiento</p>
+                <p className="text-xs font-semibold text-gray-800">3. Autorización de droguería importadora</p>
+                <p className="text-[11px] text-gray-500">Tecnology Care SRL — Droguería Autorizada DIGEMID</p>
               </div>
-              <span className="text-xs font-bold text-emerald-700 bg-emerald-50 px-2 py-1 rounded">Certificado</span>
+              <span className="text-xs font-bold text-emerald-700 bg-emerald-50 px-2 py-1 rounded">Certificada</span>
             </div>
 
             <div className="p-3 bg-gray-50 border border-gray-200 rounded-xl flex items-center justify-between">
               <div>
-                <p className="text-xs font-semibold text-gray-800">4. Formato de Consentimiento Informado Paciente</p>
-                <p className="text-[11px] text-gray-500">Alineado a Ley N° 29459 y Declaración de Madrid</p>
+                <p className="text-xs font-semibold text-gray-800">4. Formato de consentimiento informado</p>
+                <p className="text-[11px] text-gray-500">Para que el paciente firme antes de cada sesión</p>
               </div>
-              <span className="text-xs font-bold text-sky-700 bg-sky-50 px-2 py-1 rounded">Plantilla PDF</span>
+              <span className="text-xs font-bold text-sky-700 bg-sky-50 px-2 py-1 rounded">PDF listo</span>
             </div>
           </div>
         </div>
@@ -271,7 +266,7 @@ export const DossierModal: React.FC<DossierModalProps> = ({
             className="px-5 py-2.5 bg-[#0D9488] hover:bg-[#0F766E] text-white rounded-xl text-xs font-semibold flex items-center gap-2 shadow-xs"
           >
             <Check className="w-4 h-4" />
-            <span>Aprobar y Adjuntar Expediente DIGEMID</span>
+            <span>Aprobar y enviar carpeta</span>
           </button>
         </div>
       </div>
@@ -297,8 +292,8 @@ export const OutboundDraftModal: React.FC<OutboundDraftModalProps> = ({
   const draft = lead.outboundDraft || {
     recipientName: lead.directorMedico,
     recipientRole: 'Director Médico',
-    subject: `Incorporación de Ozonoterapia Sistémica en ${lead.name} sin inversión de capital`,
-    body: `Estimado(a) ${lead.directorMedico},\n\nHemos identificado la especialidad de ${lead.name} en ${lead.specialty}. Ponemos a su consideración nuestro modelo de comodato OaaS con equipos certificados por DIGEMID (Clase IIb) y capacitaciones certificadas con base en la Declaración de Madrid de ISCO3.\n\nQuedamos a su disposición para compartir el dossier regulatorio.`,
+    subject: `Equipo de ozono médico SEDECAL para ${lead.name}`,
+    body: `Estimado(a) ${lead.directorMedico},\n\nHemos identificado a ${lead.name} como un centro especializado en ${lead.specialty}. Ofrecemos generadores de ozono médico SEDECAL con registro DIGEMID, instalación, capacitación y soporte técnico local.\n\nEl equipo se puede adquirir o alquilar con un consumo mínimo de insumos, sin inversión inicial.\n\nQuedamos a su disposición para compartir la documentación técnica.`,
     suggestedChannel: 'Email',
   };
 
@@ -309,12 +304,12 @@ export const OutboundDraftModal: React.FC<OutboundDraftModalProps> = ({
           <div>
             <div className="flex items-center gap-2 mb-1">
               <span className="text-[10px] font-bold uppercase tracking-wider bg-[#F59E0B] text-black px-2 py-0.5 rounded-full">
-                Copiloto Outbound
+                Mensaje sugerido por la IA
               </span>
-              <span className="text-xs text-teal-300">Canal: {draft.suggestedChannel}</span>
+              <span className="text-xs text-teal-300">Por {draft.suggestedChannel}</span>
             </div>
             <h2 className="font-serif font-bold text-xl text-[#FAF9F5]">
-              Borrador de Contacto Personalizado
+              Mensaje para {lead.name}
             </h2>
           </div>
 
@@ -324,14 +319,18 @@ export const OutboundDraftModal: React.FC<OutboundDraftModalProps> = ({
         </div>
 
         <div className="p-6 space-y-4">
+          <p className="text-xs text-gray-500">
+            La IA preparó este mensaje. Revísalo y si te parece bien, apruébalo para enviarlo.
+          </p>
+
           <div className="space-y-2 text-xs">
             <div className="flex items-center gap-2">
-              <span className="font-semibold text-gray-500 w-20">Destinatario:</span>
+              <span className="font-semibold text-gray-500 w-20">Para:</span>
               <span className="font-bold text-gray-800">{draft.recipientName} ({draft.recipientRole})</span>
             </div>
-            <div className="flex items-center gap-2">
-              <span className="font-semibold text-gray-500 w-20">Asunto:</span>
-              <span className="font-bold text-gray-900 bg-gray-100 px-2 py-1 rounded w-full">{draft.subject}</span>
+            <div className="flex items-start gap-2">
+              <span className="font-semibold text-gray-500 w-20 shrink-0">Asunto:</span>
+              <span className="font-bold text-gray-900 bg-gray-100 px-2 py-1 rounded">{draft.subject}</span>
             </div>
           </div>
 
@@ -354,7 +353,7 @@ export const OutboundDraftModal: React.FC<OutboundDraftModalProps> = ({
             className="px-5 py-2.5 bg-[#059669] hover:bg-[#047857] text-white rounded-xl text-xs font-semibold flex items-center gap-2 shadow-xs"
           >
             <Send className="w-4 h-4" />
-            <span>Aprobar y Enviar (1 Clic)</span>
+            <span>Aprobar y enviar</span>
           </button>
         </div>
       </div>

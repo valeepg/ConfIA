@@ -3,15 +3,11 @@
 import React from 'react';
 import { Lead, PipelineStatus } from '@/types';
 import { 
-  Building2, 
   MapPin, 
   Sparkles, 
-  Eye, 
+  CheckCircle, 
   ChevronRight, 
-  ChevronLeft,
-  CheckCircle,
-  FileCheck2,
-  FileSpreadsheet
+  ChevronLeft
 } from 'lucide-react';
 
 interface KanbanBoardProps {
@@ -22,10 +18,10 @@ interface KanbanBoardProps {
 }
 
 const COLUMNS: { id: PipelineStatus; label: string; description: string }[] = [
-  { id: 'descubierto', label: 'Descubierto', description: 'Scraping IPRESS / Sin contacto previo' },
-  { id: 'contactado', label: 'Contactado', description: 'Primer acercamiento con director médico' },
-  { id: 'propuesta_enviada', label: 'Propuesta enviada', description: 'Dossier DIGEMID y propuesta ROI en evaluación' },
-  { id: 'cierre', label: 'Cierre', description: 'Contrato firmado / Comodato OaaS activo' },
+  { id: 'descubierto', label: 'Identificada', description: 'Clínica detectada, sin contacto previo' },
+  { id: 'contactado', label: 'En conversación', description: 'Ya se hizo el primer contacto' },
+  { id: 'propuesta_enviada', label: 'Cotización enviada', description: 'Se envió la cotización o la carpeta DIGEMID' },
+  { id: 'cierre', label: 'Cliente activo', description: 'Equipo instalado y operando' },
 ];
 
 export const KanbanBoard: React.FC<KanbanBoardProps> = ({
@@ -74,7 +70,7 @@ export const KanbanBoard: React.FC<KanbanBoardProps> = ({
             <div className="space-y-3 flex-1">
               {columnLeads.length === 0 ? (
                 <div className="h-32 border-2 border-dashed border-[#D5CEBF] rounded-xl flex items-center justify-center text-xs text-gray-400">
-                  Sin prospectos en esta etapa
+                  Sin clínicas en esta etapa
                 </div>
               ) : (
                 columnLeads.map((lead) => {
@@ -99,7 +95,7 @@ export const KanbanBoard: React.FC<KanbanBoardProps> = ({
                         </h4>
                         {lead.telemetryAlert && (
                           <span className="shrink-0 text-[10px] font-bold uppercase tracking-wider bg-[#FEF3C7] text-[#B45309] px-2 py-0.5 rounded-full border border-[#FDE68A]">
-                            OzonePedia
+                            Leyendo
                           </span>
                         )}
                       </div>
@@ -111,11 +107,11 @@ export const KanbanBoard: React.FC<KanbanBoardProps> = ({
                         <span className="font-medium text-gray-700">{lead.specialty}</span>
                       </div>
 
-                      {/* Lead Score Progress Bar */}
+                      {/* Interest Level Bar */}
                       <div className="mb-3">
                         <div className="flex items-center justify-between text-xs mb-1">
-                          <span className="font-medium text-gray-500">Score</span>
-                          <span className="font-bold text-[#0D9488] font-mono">{lead.score}/100</span>
+                          <span className="font-medium text-gray-500">Nivel de interés</span>
+                          <span className="font-bold text-[#0D9488] font-mono">{lead.score}%</span>
                         </div>
                         <div className="w-full bg-gray-100 h-1.5 rounded-full overflow-hidden">
                           <div
@@ -149,12 +145,12 @@ export const KanbanBoard: React.FC<KanbanBoardProps> = ({
                             className="w-full flex items-center justify-center gap-1.5 py-1.5 px-2 bg-[#FEF3C7] hover:bg-[#FDE68A] text-[#92400E] border border-[#F59E0B] rounded-lg text-xs font-semibold transition-all shadow-xs"
                           >
                             <Sparkles className="w-3.5 h-3.5 text-[#D97706]" />
-                            <span>Borrador de IA por aprobar</span>
+                            <span>Sugerencia de IA — revisar</span>
                           </button>
                         )}
                       </div>
 
-                      {/* Pipeline Quick Stage Transition Controls */}
+                      {/* Stage Controls */}
                       <div className="mt-3 pt-2.5 border-t border-gray-100 flex items-center justify-between">
                         <div>
                           {prevStatus ? (
@@ -165,7 +161,7 @@ export const KanbanBoard: React.FC<KanbanBoardProps> = ({
                                 onMoveLeadStatus(lead.id, prevStatus);
                               }}
                               className="text-gray-400 hover:text-gray-700 p-1 rounded hover:bg-gray-100 text-[11px] flex items-center gap-0.5"
-                              title="Mover a etapa anterior"
+                              title="Mover a la etapa anterior"
                             >
                               <ChevronLeft className="w-3.5 h-3.5" />
                               <span className="hidden sm:inline">Atrás</span>
@@ -175,8 +171,8 @@ export const KanbanBoard: React.FC<KanbanBoardProps> = ({
                           )}
                         </div>
 
-                        <div className="text-[11px] font-medium text-gray-500">
-                          {lead.directorMedico.split(' ')[0]} {lead.directorMedico.split(' ')[1] || ''}
+                        <div className="text-[11px] font-medium text-gray-500 truncate max-w-[100px]">
+                          {lead.directorMedico}
                         </div>
 
                         <div>
@@ -188,7 +184,7 @@ export const KanbanBoard: React.FC<KanbanBoardProps> = ({
                                 onMoveLeadStatus(lead.id, nextStatus);
                               }}
                               className="text-[#059669] hover:text-[#047857] hover:bg-[#ECFDF5] px-1.5 py-1 rounded text-[11px] font-semibold flex items-center gap-0.5 transition-colors"
-                              title="Avanzar etapa comercial"
+                              title="Avanzar a la siguiente etapa"
                             >
                               <span>Avanzar</span>
                               <ChevronRight className="w-3.5 h-3.5" />
