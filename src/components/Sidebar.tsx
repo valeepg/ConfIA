@@ -24,10 +24,10 @@ export const Sidebar: React.FC<SidebarProps> = ({
   onOpenOzonePedia,
 }) => {
   const navItems = [
-    { id: 'pipeline', label: 'Pipeline B2B', icon: Kanban, badge: 'RF-03' },
-    { id: 'prospectos', label: 'Prospectos IPRESS', icon: Users },
-    { id: 'posventa', label: 'Posventa y Retención', icon: Repeat, badge: 'RF-04' },
-    { id: 'documentos', label: 'Dossiers DIGEMID', icon: FileText },
+    { id: 'pipeline', label: 'Seguimiento de Clínicas', icon: Kanban },
+    { id: 'prospectos', label: 'Todas las Clínicas', icon: Users },
+    { id: 'posventa', label: 'Clientes y Equipos', icon: Repeat },
+    { id: 'documentos', label: 'Documentos DIGEMID', icon: FileText },
   ];
 
   return (
@@ -44,7 +44,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 ConfIA
               </h1>
               <p className="text-[11px] text-[#93C5FD]/70 font-sans uppercase tracking-wider">
-                Ozonoterapia B2B
+                Ozono Médico
               </p>
             </div>
           </div>
@@ -56,7 +56,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
         {/* Navigation Menu */}
         <nav className="p-4 space-y-1.5">
           <div className="text-[11px] uppercase tracking-wider text-gray-400 font-semibold px-3 mb-2">
-            Módulos Comerciales
+            Panel de Trabajo
           </div>
 
           {navItems.map((item) => {
@@ -76,19 +76,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
                   <Icon className={`w-4 h-4 ${isActive ? 'text-[#34D399]' : 'text-gray-400'}`} />
                   <span>{item.label}</span>
                 </div>
-                {item.badge && (
-                  <span className={`text-[10px] px-1.5 py-0.5 rounded font-mono ${
-                    isActive ? 'bg-[#059669]/30 text-[#A7F3D0]' : 'bg-[#0E2E33] text-gray-400'
-                  }`}>
-                    {item.badge}
-                  </span>
-                )}
               </button>
             );
           })}
 
           <div className="pt-4 text-[11px] uppercase tracking-wider text-gray-400 font-semibold px-3 mb-2">
-            Hub de Evidencia
+            Información Médica
           </div>
 
           <button
@@ -97,7 +90,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
           >
             <div className="flex items-center gap-3">
               <Sparkles className="w-4 h-4 text-[#F59E0B] group-hover:scale-110 transition-transform" />
-              <span>OzonePedia (Hub)</span>
+              <span>OzonePedia</span>
             </div>
             <ExternalLink className="w-3.5 h-3.5 text-gray-500 group-hover:text-[#38BDF8]" />
           </button>
@@ -108,19 +101,19 @@ export const Sidebar: React.FC<SidebarProps> = ({
       <div className="p-4 border-t border-[#0F2F38]/60 space-y-3 bg-[#05161A]/50">
         <div className="flex items-center gap-2 px-2 py-1.5 bg-[#082228] rounded-md border border-[#0E3B43]">
           <ShieldCheck className="w-3.5 h-3.5 text-[#10B981] shrink-0" />
-          <span className="text-[11px] text-gray-300 font-medium">DIGEMID Clase IIb &middot; BPM</span>
+          <span className="text-[11px] text-gray-300 font-medium">DIGEMID &middot; Droguería Autorizada</span>
         </div>
 
         <div className="flex items-center gap-3 px-2 pt-1">
           <div className="relative">
             <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-[#0D9488] to-[#14B8A6] flex items-center justify-center text-white font-bold text-xs shadow-sm">
-              DV
+              TC
             </div>
             <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-[#10B981] rounded-full ring-2 ring-[#071C21]"></span>
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-xs font-semibold text-white truncate">Dueño / Ventas</p>
-            <p className="text-[11px] text-gray-400 truncate">Operador Comercial B2B</p>
+            <p className="text-xs font-semibold text-white truncate">Tecnocare</p>
+            <p className="text-[11px] text-gray-400 truncate">Ventas &amp; Soporte</p>
           </div>
         </div>
       </div>
