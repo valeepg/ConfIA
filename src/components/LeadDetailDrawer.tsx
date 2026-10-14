@@ -88,7 +88,7 @@ export const LeadDetailDrawer: React.FC<LeadDetailDrawerProps> = ({
           <div className="flex items-center justify-between mb-3">
             <h3 className="text-xs font-bold uppercase tracking-wider text-gray-500 flex items-center gap-1.5">
               <BookOpen className="w-3.5 h-3.5 text-[#D97706]" />
-              Qué están leyendo en OzonePedia
+              Interés y Consultas Clínicas
             </h3>
             {lead.telemetryActivity.lastVisited && (
               <span className="text-[11px] text-amber-700 bg-amber-50 px-2 py-0.5 rounded-full font-medium">
@@ -107,7 +107,7 @@ export const LeadDetailDrawer: React.FC<LeadDetailDrawerProps> = ({
                   Autohemoterapia mayor (AHTm): cómo funciona
                 </p>
                 <p className="text-gray-500 mt-0.5 font-medium">
-                  {lead.telemetryActivity.ahtmReads} lectura{lead.telemetryActivity.ahtmReads !== 1 ? 's' : ''}
+                  {lead.telemetryActivity.ahtmReads} consulta{lead.telemetryActivity.ahtmReads !== 1 ? 's' : ''} sobre protocolo
                 </p>
               </div>
             </div>
@@ -121,7 +121,7 @@ export const LeadDetailDrawer: React.FC<LeadDetailDrawerProps> = ({
                   Hernia discal lumbar: tratamiento con ozono
                 </p>
                 <p className="text-gray-500 mt-0.5 font-medium">
-                  {lead.telemetryActivity.lumbarMinutes} minutos leyendo este artículo
+                  {lead.telemetryActivity.lumbarMinutes} minutos de revisión técnica
                 </p>
               </div>
             </div>
@@ -132,7 +132,7 @@ export const LeadDetailDrawer: React.FC<LeadDetailDrawerProps> = ({
                   <Search className="w-4 h-4" />
                 </div>
                 <div className="text-xs">
-                  <p className="font-medium text-gray-500">Buscaron en OzonePedia:</p>
+                  <p className="font-medium text-gray-500">Término consultado:</p>
                   <p className="font-semibold text-[#071C21] italic mt-0.5">
                     &ldquo;{lead.telemetryActivity.searchQuery}&rdquo;
                   </p>

@@ -104,7 +104,7 @@ export const INITIAL_LEADS: Lead[] = [
     specialty: 'Dolor y rehabilitación',
     score: 71,
     status: 'contactado',
-    statusNote: 'Están leyendo artículos en la OzonePedia ahora',
+    statusNote: 'Revisando protocolos clínicos de infiltración y dolor',
     directorMedico: 'Dr. Juan Carlos Ramos',
     doctorSpecialty: 'Traumatología y Medicina Deportiva',
     hasAiDraft: true,
@@ -300,7 +300,7 @@ export const INITIAL_TRAINING: TrainingProgress = {
 export const FIRESTORE_COLLECTIONS: FirestoreCollectionDefinition[] = [
   {
     name: 'prospects',
-    purpose: 'Prospectos B2B con score, estado del pipeline y actividad de telemetría OzonePedia.',
+    purpose: 'Registro de clínicas con puntaje de afinidad, estado de seguimiento y datos de contacto.',
     fields: ['id', 'clinicName', 'specialty', 'status', 'score', 'director', 'telemetry', 'drafts'],
     role: 'sales',
   },

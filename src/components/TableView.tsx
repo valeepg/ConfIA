@@ -35,7 +35,7 @@ export const TableView: React.FC<TableViewProps> = ({
               <th className="py-3.5 px-4">Especialidad</th>
               <th className="py-3.5 px-4">Interés</th>
               <th className="py-3.5 px-4">Etapa</th>
-              <th className="py-3.5 px-4">Lecturas en OzonePedia</th>
+              <th className="py-3.5 px-4">Interés Detectado</th>
               <th className="py-3.5 px-4">Asistente IA</th>
               <th className="py-3.5 px-4 text-right">Ver</th>
             </tr>

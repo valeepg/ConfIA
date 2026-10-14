@@ -310,7 +310,7 @@ export const PosventaView: React.FC<PosventaViewProps> = ({
             {/* New protocol notification */}
             <div className="p-3.5 bg-emerald-50/50 rounded-xl border border-emerald-200/60 space-y-2">
               <p className="text-xs text-emerald-950 font-medium leading-snug">
-                Nuevo artículo en <strong>OzonePedia</strong>: {training.recentProtocolName}. ¿Enviar un resumen a los médicos de traumatología?
+                Nueva actualización en <strong>Guías Clínicas</strong>: {training.recentProtocolName}. ¿Enviar un resumen a los médicos de traumatología?
               </p>
 
               {notePrepared ? (
