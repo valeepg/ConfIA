@@ -593,87 +593,159 @@ export default function Home() {
               <section className="space-y-6">
                 <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
                   <MetricCard label="Equipos instalados" value="14 unidades" accent="deep" />
-                  <MetricCard label="Repuestos por enviar" value="2 clínicas" accent="amber" />
-                  <MetricCard label="Mantenimiento preventivo" value="3 alertas" accent="red" />
-                  <MetricCard label="Médicos capacitados" value="9 de 12" accent="teal" />
+                  <MetricCard label="Insumos por reponer" value="2 clientes" accent="amber" />
+                  <MetricCard label="Ciclo de Mantenimiento" value="Cada 5 años" accent="teal" />
+                  <MetricCard label="Médicos capacitados" value="9 de 12" accent="green" />
                 </div>
 
-                <div className="grid gap-6 xl:grid-cols-[1.4fr_0.6fr]">
-                  <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-                    <div className="mb-4 flex items-center justify-between">
-                      <div>
-                        <h2 className="font-serif text-2xl font-bold text-[#071C21]">Consumo de Insumos</h2>
-                        <p className="text-xs text-slate-500 mt-1">Kits descartables AHTm y accesorios sin PVC</p>
+                <div className="grid gap-6 xl:grid-cols-[1fr_1.3fr]">
+                  {/* Consumibles Table */}
+                  <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm flex flex-col justify-between">
+                    <div>
+                      <div className="mb-4 flex items-center justify-between">
+                        <div>
+                          <h2 className="font-serif text-2xl font-bold text-[#071C21]">Consumo de Insumos</h2>
+                          <p className="text-xs text-slate-500 mt-0.5">Kits descartables AHTm y accesorios sin PVC</p>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => setDataMessage("Recordatorio de reposición preparado para clientes con stock bajo.")}
+                          className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5 text-xs font-medium text-slate-700 hover:bg-slate-100"
+                        >
+                          <Bot className="h-3.5 w-3.5 text-emerald-700" />
+                          Recordar stock
+                        </button>
                       </div>
-                      <button
-                        type="button"
-                        onClick={() => setDataMessage("Se preparó un recordatorio automático de compra para los clientes con stock bajo.")}
-                        className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-100"
-                      >
-                        <Bot className="h-4 w-4 text-emerald-700" />
-                        Avisar a clínicas con stock bajo
-                      </button>
+
+                      <div className="overflow-hidden rounded-xl border border-slate-200">
+                        <table className="min-w-full divide-y divide-slate-200 text-left">
+                          <thead className="bg-slate-50 text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">
+                            <tr>
+                              <th className="px-3.5 py-2.5">Cliente</th>
+                              <th className="px-3.5 py-2.5">Insumo</th>
+                              <th className="px-3.5 py-2.5">Estado</th>
+                            </tr>
+                          </thead>
+                          <tbody className="divide-y divide-slate-200 bg-white text-xs text-slate-700">
+                            {INITIAL_CONSUMABLES.map((item) => (
+                              <tr key={item.id}>
+                                <td className="px-3.5 py-3 font-medium text-[#071C21]">{item.clinicName}</td>
+                                <td className="px-3.5 py-3 text-slate-600">{item.consumableType}</td>
+                                <td className="px-3.5 py-3">
+                                  <span className={`inline-flex rounded-full px-2 py-0.5 text-[11px] font-semibold ${STATUS_STYLES[item.status]}`}>
+                                    {item.status === "agotado" ? "Agotado" : item.status === "reabastecer" ? "Pedir pronto" : "Al día"}
+                                  </span>
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
                     </div>
 
-                    <div className="overflow-hidden rounded-xl border border-slate-200">
-                      <table className="min-w-full divide-y divide-slate-200 text-left">
-                        <thead className="bg-slate-50 text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">
-                          <tr>
-                            <th className="px-4 py-3">Cliente</th>
-                            <th className="px-4 py-3">Insumo</th>
-                            <th className="px-4 py-3">Consumo mensual</th>
-                            <th className="px-4 py-3">Estado del stock</th>
-                          </tr>
-                        </thead>
-                        <tbody className="divide-y divide-slate-200 bg-white text-sm text-slate-700">
-                          {INITIAL_CONSUMABLES.map((item) => (
-                            <tr key={item.id}>
-                              <td className="px-4 py-3 font-medium text-[#071C21]">{item.clinicName}</td>
-                              <td className="px-4 py-3 text-xs">{item.consumableType}</td>
-                              <td className="px-4 py-3 text-xs">{item.estimatedMonthly}</td>
-                              <td className="px-4 py-3">
-                                <span className={`inline-flex rounded-full px-2.5 py-0.5 text-xs font-semibold ${STATUS_STYLES[item.status]}`}>
-                                  {item.status === "agotado" ? "Agotado" : item.status === "reabastecer" ? "Pedir pronto" : "Al día"}
-                                </span>
-                              </td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
+                    {/* Capacitacion Banner */}
+                    <div className="mt-5 rounded-2xl border border-slate-200 bg-[#071C21] p-4 text-white">
+                      <p className="text-xs font-semibold uppercase tracking-[0.18em] text-emerald-300">Capacitación Médica Continua</p>
+                      <div className="mt-2 flex items-center justify-between">
+                        <div>
+                          <p className="text-2xl font-bold">{INITIAL_TRAINING.certifiedDoctors}/{INITIAL_TRAINING.totalDoctors}</p>
+                          <p className="text-xs text-slate-300 mt-0.5">Médicos acreditados en ozonoterapia</p>
+                        </div>
+                        <span className="text-xs bg-emerald-900/60 border border-emerald-500/40 text-emerald-200 px-3 py-1 rounded-full font-medium">
+                          Vigente 2026
+                        </span>
+                      </div>
                     </div>
                   </div>
 
-                  <div className="space-y-6">
-                    {/* Alertas de Mantenimiento (hasta 6 años de vida) */}
-                    <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-                      <div className="flex items-center justify-between">
-                        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">Mantenimiento y Calibración</p>
-                        <span className="text-[11px] bg-slate-100 text-slate-600 px-2 py-0.5 rounded-full">Ciclos de hasta 6 años</span>
+                  {/* Enhanced Maintenance & Lifecycle View */}
+                  <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm space-y-4">
+                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 border-b border-slate-100 pb-3">
+                      <div>
+                        <h2 className="font-serif text-2xl font-bold text-[#071C21]">Parque de Equipos y Mantenimiento</h2>
+                        <p className="text-xs text-slate-500 mt-0.5">
+                          Tecnología de alta durabilidad: los equipos médicos requieren mantenimiento mayor <strong>cada 5 años</strong>.
+                        </p>
                       </div>
-                      <div className="mt-4 space-y-3">
-                        {INITIAL_MAINTENANCE.map((alert) => (
-                          <div key={alert.id} className="rounded-xl border border-slate-200 bg-slate-50 p-3">
-                            <div className="flex items-center justify-between">
-                              <p className="font-semibold text-[#071C21] text-xs">{alert.clinicName}</p>
-                              <span className={`rounded-full px-2 py-0.5 text-[10px] font-bold uppercase ${
-                                alert.urgency === "high" ? "bg-red-100 text-red-700" : alert.urgency === "medium" ? "bg-amber-100 text-amber-700" : "bg-emerald-100 text-emerald-700"
-                              }`}>{alert.urgency === "high" ? "Urgente" : alert.urgency === "medium" ? "Próximo" : "Al día"}</span>
-                            </div>
-                            <p className="mt-1.5 text-xs text-slate-700">{alert.task}</p>
-                            <p className="mt-1 text-[11px] text-slate-500">{alert.dueInText}</p>
-                          </div>
-                        ))}
-                      </div>
+                      <span className="inline-flex items-center gap-1.5 self-start sm:self-auto rounded-full bg-emerald-50 border border-emerald-200 px-3 py-1 text-xs font-semibold text-emerald-800">
+                        <ShieldCheck className="h-4 w-4 text-emerald-600" />
+                        Ciclos de 5 Años
+                      </span>
                     </div>
 
-                    {/* Capacitacion */}
-                    <div className="rounded-2xl border border-slate-200 bg-[#071C21] p-5 text-white shadow-sm">
-                      <p className="text-xs font-semibold uppercase tracking-[0.2em] text-emerald-300">Capacitación a Médicos</p>
-                      <div className="mt-4 rounded-xl bg-white/5 p-4">
-                        <p className="text-3xl font-bold">{INITIAL_TRAINING.certifiedDoctors}/{INITIAL_TRAINING.totalDoctors}</p>
-                        <p className="mt-1 text-xs text-slate-300">Médicos certificados en manejo de ozono</p>
-                        <p className="mt-3 text-xs text-slate-100 font-medium">{INITIAL_TRAINING.recentProtocolName}</p>
-                      </div>
+                    <div className="space-y-3.5">
+                      {INITIAL_MAINTENANCE.map((item) => (
+                        <div key={item.id} className="rounded-2xl border border-slate-200 bg-[#FAF9F6] p-4 transition hover:border-[#0B6E4F]/40 hover:bg-white">
+                          <div className="flex flex-wrap items-start justify-between gap-2">
+                            <div>
+                              <div className="flex items-center gap-2">
+                                <h3 className="font-semibold text-sm text-[#071C21]">{item.clinicName}</h3>
+                                {item.clientType && CLIENT_TYPE_META[item.clientType] && (
+                                  <span className={`rounded-md border px-1.5 py-0.5 text-[9px] font-semibold ${CLIENT_TYPE_META[item.clientType].badge}`}>
+                                    {CLIENT_TYPE_META[item.clientType].label}
+                                  </span>
+                                )}
+                              </div>
+                              <p className="text-xs font-medium text-[#059669] mt-0.5">{item.equipmentModel} · Serie: <span className="font-mono text-slate-700">{item.serialNumber}</span></p>
+                            </div>
+
+                            <span className={`rounded-full px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider ${
+                              item.urgency === 'high' ? 'bg-red-100 text-red-700 border border-red-200' :
+                              item.urgency === 'medium' ? 'bg-amber-100 text-amber-800 border border-amber-200' :
+                              'bg-emerald-100 text-emerald-800 border border-emerald-200'
+                            }`}>
+                              {item.urgency === 'high' ? 'Mantenimiento 5 Años Cumplido' :
+                               item.urgency === 'medium' ? 'Revisión Próxima (Año 4)' :
+                               'Operativo / Al día'}
+                            </span>
+                          </div>
+
+                          {/* 5-Year Lifespan Progress Bar */}
+                          <div className="mt-3.5 rounded-xl bg-white border border-slate-200/80 p-3">
+                            <div className="flex items-center justify-between text-xs mb-1.5">
+                              <span className="text-slate-600 font-medium">Ciclo Quinquenal:</span>
+                              <span className="font-bold text-[#071C21]">
+                                Año {item.currentYearOfUse} de {item.expectedLifespanYears} (Instalado {item.installYear})
+                              </span>
+                            </div>
+
+                            {/* Visual Progress Bar (5 segments for 5 years) */}
+                            <div className="grid grid-cols-5 gap-1.5">
+                              {[1, 2, 3, 4, 5].map((year) => {
+                                const isPassed = year < item.currentYearOfUse;
+                                const isCurrent = year === item.currentYearOfUse;
+                                return (
+                                  <div key={year} className="flex flex-col items-center">
+                                    <div
+                                      className={`h-2.5 w-full rounded-sm transition-all ${
+                                        isPassed
+                                          ? 'bg-[#0B6E4F]'
+                                          : isCurrent
+                                          ? item.urgency === 'high' ? 'bg-red-500' : 'bg-amber-500 animate-pulse'
+                                          : 'bg-slate-200'
+                                      }`}
+                                    />
+                                    <span className="text-[9px] text-slate-400 mt-1 font-mono">Año {year}</span>
+                                  </div>
+                                );
+                              })}
+                            </div>
+                          </div>
+
+                          <div className="mt-3 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 text-xs">
+                            <p className="text-slate-700 font-medium">
+                              📅 {item.dueInText}
+                            </p>
+                            <span className="text-slate-500 text-[11px]">
+                              {item.nextMajorService}
+                            </span>
+                          </div>
+
+                          <p className="mt-2 text-xs text-slate-600 bg-white/60 rounded-lg p-2 border border-slate-100">
+                            {item.statusNote}
+                          </p>
+                        </div>
+                      ))}
                     </div>
                   </div>
                 </div>

@@ -75,12 +75,19 @@ export interface ConsumableItem {
 export interface MaintenanceItem {
   id: string;
   clinicName: string;
+  clientType?: string;
+  equipmentModel: string;
+  serialNumber?: string;
+  installYear: number;
+  expectedLifespanYears: number; // e.g. 5 to 6 years
+  currentYearOfUse: number; // e.g. Año 2 de 5
   task: string;
   dueInText: string;
   urgency: 'high' | 'medium' | 'low';
-  equipmentModel?: string;
   installDate?: string;
   nextMajorService?: string;
+  healthPercent: number; // 0 to 100%
+  statusNote: string;
 }
 
 export interface TrainingProgress {
