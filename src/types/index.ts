@@ -85,3 +85,42 @@ export interface TrainingProgress {
   recentProtocolName: string;
   targetDepartment: string;
 }
+
+export interface FirestoreCollectionDefinition {
+  name: string;
+  purpose: string;
+  fields: string[];
+  role: 'admin' | 'sales' | 'medical' | 'support';
+}
+
+export interface DatasetAlert {
+  id: string;
+  title: string;
+  summary: string;
+  risk: 'alta' | 'media' | 'baja';
+}
+
+export type ProposalType = 'outbound' | 'roi' | 'dossier' | 'consumibles';
+
+export interface ProposalDocument {
+  id: string;
+  prospectId: string;
+  type: ProposalType;
+  status: 'pending_approval' | 'approved' | 'discarded';
+  createdBy: string;
+  approvedBy?: string;
+  aiContent: OutboundDraft | RoiProposal | DigemidDossier | ConsumableItem['reminderDraft'];
+}
+
+export interface InstalledBaseRecord {
+  id: string;
+  clinicName: string;
+  equipmentModel: string;
+  installationDate: string;
+  consumableStatus: ConsumableStatus;
+  lastOrderText: string;
+  maintenanceTask?: string;
+  maintenanceDueInText?: string;
+  maintenanceUrgency?: MaintenanceItem['urgency'];
+  trainingProgress: TrainingProgress;
+}

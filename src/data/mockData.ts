@@ -1,4 +1,4 @@
-import { Lead, ConsumableItem, MaintenanceItem, TrainingProgress } from '@/types';
+import { Lead, ConsumableItem, MaintenanceItem, TrainingProgress, FirestoreCollectionDefinition, DatasetAlert } from '@/types';
 
 export const INITIAL_LEADS: Lead[] = [
   {
@@ -287,3 +287,51 @@ export const INITIAL_TRAINING: TrainingProgress = {
   recentProtocolName: 'Artrosis de rodilla: protocolo de ozonoterapia intraarticular',
   targetDepartment: 'Clínicos de Traumatología y Medicina Física',
 };
+
+export const FIRESTORE_COLLECTIONS: FirestoreCollectionDefinition[] = [
+  {
+    name: 'prospects',
+    purpose: 'Prospectos B2B con score, estado del pipeline y actividad de telemetría OzonePedia.',
+    fields: ['id', 'clinicName', 'specialty', 'status', 'score', 'director', 'telemetry', 'drafts'],
+    role: 'sales',
+  },
+  {
+    name: 'proposals',
+    purpose: 'Propuestas financieras ROI y borradores de outreach aprobados por el dueño.',
+    fields: ['leadId', 'proposalType', 'summary', 'roiMetrics', 'approvedBy', 'sentAt'],
+    role: 'admin',
+  },
+  {
+    name: 'installed_base',
+    purpose: 'Parque instalado con consumo de insumos, mantenimiento y seguimiento de calibración DIGEMID.',
+    fields: ['clinicId', 'equipmentModel', 'lastServiceDate', 'consumables', 'maintenanceAlerts'],
+    role: 'support',
+  },
+  {
+    name: 'users',
+    purpose: 'Usuarios autenticados con roles y permisos de acceso a Firestore según perfil.',
+    fields: ['uid', 'role', 'department', 'email', 'lastLogin', 'permissions'],
+    role: 'admin',
+  },
+];
+
+export const DATASET_ALERTS: DatasetAlert[] = [
+  {
+    id: 'alert-1',
+    title: 'Sanitización de registros',
+    summary: 'Se validan RUC/IPRESS para evitar duplicados y datos no autorizados antes del envío a Gemini.',
+    risk: 'alta',
+  },
+  {
+    id: 'alert-2',
+    title: 'Structured outputs',
+    summary: 'Gemini solo puede devolver JSON validado con Pydantic para ROI, propuesta y dossier sanitario.',
+    risk: 'media',
+  },
+  {
+    id: 'alert-3',
+    title: 'Seguridad por rol',
+    summary: 'El acceso a dossiers de DIGEMID y propuestas financieras está restringido al dueño y roles autorizados.',
+    risk: 'baja',
+  },
+];

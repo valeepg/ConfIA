@@ -1,0 +1,50 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function hasRole(role) {
+      return signedIn()
+        && exists(/databases/$(database)/documents/users/$(request.auth.uid))
+        && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == role;
+    }
+
+    function canReadProspects() {
+      return hasRole('admin') || hasRole('sales') || hasRole('medical');
+    }
+
+    function canWriteProspects() {
+      return hasRole('admin') || hasRole('sales');
+    }
+
+    match /prospects/{prospectId} {
+      allow read: if canReadProspects();
+      allow create, update: if canWriteProspects();
+      allow delete: if hasRole('admin');
+    }
+
+    match /proposals/{proposalId} {
+      allow read: if hasRole('admin') || hasRole('sales') || hasRole('medical');
+      allow create, update: if hasRole('admin') || hasRole('sales');
+      allow delete: if hasRole('admin');
+    }
+
+    match /installed_base/{installedBaseId} {
+      allow read: if hasRole('admin') || hasRole('medical') || hasRole('support');
+      allow create, update: if hasRole('admin') || hasRole('support');
+      allow delete: if hasRole('admin');
+    }
+
+    match /users/{userId} {
+      allow read: if signedIn() && (request.auth.uid == userId || hasRole('admin'));
+      allow create: if hasRole('admin');
+      allow update: if hasRole('admin')
+        || (request.auth.uid == userId
+          && request.resource.data.role == resource.data.role);
+      allow delete: if hasRole('admin');
+    }
+  }
+}
