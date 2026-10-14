@@ -127,3 +127,31 @@ export interface InstalledBaseRecord {
   maintenanceUrgency?: MaintenanceItem['urgency'];
   trainingProgress: TrainingProgress;
 }
+
+/* ── Equipment Catalog ──────────────────────────────── */
+
+export interface EquipmentItem {
+  id: string;
+  model: string;
+  brand: string;
+  category: string;
+  description: string;
+  priceUSD: number;
+  registroDiGEMID?: string;
+  certifications: string[];
+  maintenanceCycleYears: number;
+  imageUrl?: string;
+  applications: string[];
+}
+
+/* ── Regulatory Files for AI ─────────────────────────── */
+
+export interface RegulatoryFile {
+  id: string;
+  name: string;
+  type: 'declaracion_madrid' | 'registro_sanitario' | 'calibracion' | 'buenas_practicas' | 'consentimiento' | 'protocolo' | 'otro';
+  description: string;
+  uploadedAt: string;
+  sizeKB: number;
+  feedsAI: boolean;
+}

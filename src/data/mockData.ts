@@ -1,4 +1,4 @@
-import { Lead, ConsumableItem, MaintenanceItem, TrainingProgress, FirestoreCollectionDefinition, DatasetAlert } from '@/types';
+import { Lead, ConsumableItem, MaintenanceItem, TrainingProgress, FirestoreCollectionDefinition, DatasetAlert, EquipmentItem, RegulatoryFile } from '@/types';
 
 export const INITIAL_LEADS: Lead[] = [
   {
@@ -344,3 +344,94 @@ export const DATASET_ALERTS: DatasetAlert[] = [
     risk: 'baja',
   },
 ];
+
+export const INITIAL_EQUIPMENT: EquipmentItem[] = [
+  {
+    id: 'eq-1',
+    model: 'Ozonette',
+    brand: 'SEDECAL',
+    category: 'Generador Médico Compacto',
+    description: 'Generador de ozono médico compacto y portátil de alta precisión. Ideal para consultas ambulatorias, infiltraciones y aplicaciones locales.',
+    priceUSD: 8500,
+    registroDiGEMID: 'DM-14820-E',
+    certifications: ['CE 0120 Médico', 'ISO 13485', 'Declaración de Madrid'],
+    maintenanceCycleYears: 6,
+    applications: ['Traumatología', 'Infiltraciones articulares', 'Medicina del Dolor', 'Dermatología']
+  },
+  {
+    id: 'eq-2',
+    model: 'Ozonobaric P',
+    brand: 'SEDECAL',
+    category: 'Equipo Clínico Multidisciplinar',
+    description: 'Sistema integral con medición fotométrica continua y doble sistema de vacío. Diseñado para autohemoterapia mayor (AHTm) y tratamientos sistémicos de alta exigencia.',
+    priceUSD: 14200,
+    registroDiGEMID: 'DM-15943-E',
+    certifications: ['CE 0120 Médico', 'ISO 13485', 'DIGEMID Clase IIb'],
+    maintenanceCycleYears: 5,
+    applications: ['Autohemoterapia Mayor (AHTm)', 'Hernia Discal', 'Reumatología', 'Medicina Regenerativa']
+  },
+  {
+    id: 'eq-3',
+    model: 'Compact Station O3',
+    brand: 'Tecnocare Medical',
+    category: 'Estación Móvil Asistencial',
+    description: 'Carro clínico rodable ergonómico con soporte para balón de oxígeno medicinal medicinal grado O2 99.5% y gavetas estériles para kits.',
+    priceUSD: 2300,
+    registroDiGEMID: 'DM-16102-E',
+    certifications: ['ISO 9001', 'Normativa Técnica Peruana'],
+    maintenanceCycleYears: 6,
+    applications: ['Movilidad intrahospitalaria', 'Soporte clínico seguro']
+  },
+  {
+    id: 'eq-4',
+    model: 'Kit Descartable AHTm (Caja x 20)',
+    brand: 'OzoneCare Insumos',
+    category: 'Consumible Certificado',
+    description: 'Líneas libres de PVC y bolsas resistentes a concentraciones altas de ozono para autohemoterapia segura sin microplásticos.',
+    priceUSD: 360,
+    registroDiGEMID: 'DM-REV-2024',
+    certifications: ['Libre de DEHP/PVC', 'Estéril ETO', 'Grado Médico'],
+    maintenanceCycleYears: 0,
+    applications: ['Tratamientos sistémicos seguros']
+  }
+];
+
+export const INITIAL_REGULATORY_FILES: RegulatoryFile[] = [
+  {
+    id: 'reg-1',
+    name: 'Declaracion_Madrid_Ozonoterapia_2020.pdf',
+    type: 'declaracion_madrid',
+    description: 'Estándar científico internacional de dosis seguras y ventanas terapéuticas (5 a 40 ug/ml). Guía matriz del agente IA.',
+    uploadedAt: '12 Ene 2026',
+    sizeKB: 2420,
+    feedsAI: true
+  },
+  {
+    id: 'reg-2',
+    name: 'Registro_Sanitario_DIGEMID_SEDECAL_Ozonette.pdf',
+    type: 'registro_sanitario',
+    description: 'Certificado de registro sanitario oficial Clase IIb vigente otorgado por DIGEMID Perú.',
+    uploadedAt: '15 Ene 2026',
+    sizeKB: 1150,
+    feedsAI: true
+  },
+  {
+    id: 'reg-3',
+    name: 'Certificado_Calibracion_Metrologica_Inacal.pdf',
+    type: 'calibracion',
+    description: 'Patrón de calibración fotométrica y pureza de gas medicinal con ciclo garantizado hasta 6 años.',
+    uploadedAt: '03 Feb 2026',
+    sizeKB: 890,
+    feedsAI: true
+  },
+  {
+    id: 'reg-4',
+    name: 'Plantilla_Consentimiento_Informado_Minam.docx',
+    type: 'consentimiento',
+    description: 'Formato legal de consentimiento informado para pacientes sometidos a autohemoterapia o infiltraciones.',
+    uploadedAt: '20 Feb 2026',
+    sizeKB: 340,
+    feedsAI: true
+  }
+];
+

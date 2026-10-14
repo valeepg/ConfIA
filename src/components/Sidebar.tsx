@@ -5,29 +5,28 @@ import {
   Kanban, 
   Users, 
   Repeat, 
-  BarChart3, 
+  ShoppingBag, 
+  Settings, 
   FileText, 
-  ShieldCheck, 
-  Sparkles,
-  ExternalLink
+  ShieldCheck 
 } from 'lucide-react';
 
 interface SidebarProps {
   currentTab: string;
   onSelectTab: (tab: string) => void;
-  onOpenOzonePedia: () => void;
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({
   currentTab,
   onSelectTab,
-  onOpenOzonePedia,
 }) => {
   const navItems = [
     { id: 'pipeline', label: 'Seguimiento de Clínicas', icon: Kanban },
-    { id: 'prospectos', label: 'Todas las Clínicas', icon: Users },
-    { id: 'posventa', label: 'Clientes y Equipos', icon: Repeat },
-    { id: 'documentos', label: 'Documentos DIGEMID', icon: FileText },
+    { id: 'prospectos', label: 'Listado de Clínicas', icon: Users },
+    { id: 'posventa', label: 'Clientes y Mantenimiento', icon: Repeat },
+    { id: 'catalogo', label: 'Catálogo de Equipos', icon: ShoppingBag },
+    { id: 'configuracion', label: 'Configuración y Regulación', icon: Settings },
+    { id: 'documentos', label: 'Esquema de Datos', icon: FileText },
   ];
 
   return (
@@ -44,19 +43,19 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 ConfIA
               </h1>
               <p className="text-[11px] text-[#93C5FD]/70 font-sans uppercase tracking-wider">
-                Ozono Médico
+                Ozono Médico Perú
               </p>
             </div>
           </div>
           <span className="text-[10px] bg-[#0E2E33] text-[#34D399] px-2 py-0.5 rounded-full font-medium border border-[#059669]/30">
-            v1.0
+            v1.2
           </span>
         </div>
 
         {/* Navigation Menu */}
         <nav className="p-4 space-y-1.5">
           <div className="text-[11px] uppercase tracking-wider text-gray-400 font-semibold px-3 mb-2">
-            Panel de Trabajo
+            Panel Principal
           </div>
 
           {navItems.map((item) => {
@@ -79,21 +78,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
               </button>
             );
           })}
-
-          <div className="pt-4 text-[11px] uppercase tracking-wider text-gray-400 font-semibold px-3 mb-2">
-            Información Médica
-          </div>
-
-          <button
-            onClick={onOpenOzonePedia}
-            className="w-full flex items-center justify-between px-3.5 py-2.5 rounded-lg text-sm font-medium text-gray-300 hover:bg-[#0A242B] hover:text-[#38BDF8] transition-all group"
-          >
-            <div className="flex items-center gap-3">
-              <Sparkles className="w-4 h-4 text-[#F59E0B] group-hover:scale-110 transition-transform" />
-              <span>OzonePedia</span>
-            </div>
-            <ExternalLink className="w-3.5 h-3.5 text-gray-500 group-hover:text-[#38BDF8]" />
-          </button>
         </nav>
       </div>
 
@@ -101,7 +85,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
       <div className="p-4 border-t border-[#0F2F38]/60 space-y-3 bg-[#05161A]/50">
         <div className="flex items-center gap-2 px-2 py-1.5 bg-[#082228] rounded-md border border-[#0E3B43]">
           <ShieldCheck className="w-3.5 h-3.5 text-[#10B981] shrink-0" />
-          <span className="text-[11px] text-gray-300 font-medium">DIGEMID &middot; Droguería Autorizada</span>
+          <span className="text-[11px] text-gray-300 font-medium">DIGEMID &middot; Droguería Certificada</span>
         </div>
 
         <div className="flex items-center gap-3 px-2 pt-1">
@@ -112,8 +96,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
             <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-[#10B981] rounded-full ring-2 ring-[#071C21]"></span>
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-xs font-semibold text-white truncate">Tecnocare</p>
-            <p className="text-[11px] text-gray-400 truncate">Ventas &amp; Soporte</p>
+            <p className="text-xs font-semibold text-white truncate">Tecnocare Perú</p>
+            <p className="text-[11px] text-gray-400 truncate">Equipos &amp; Asistencia</p>
           </div>
         </div>
       </div>
