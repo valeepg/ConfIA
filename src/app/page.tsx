@@ -61,6 +61,13 @@ const STATUS_STYLES = {
   al_dia: "bg-emerald-50 text-emerald-700 border border-emerald-200",
 };
 
+const CLIENT_TYPE_META: Record<string, { label: string; badge: string }> = {
+  "Clinica": { label: "Clínica Privada", badge: "bg-blue-50 text-blue-700 border-blue-200" },
+  "Hospital Publico": { label: "Hospital Público", badge: "bg-purple-50 text-purple-700 border-purple-200" },
+  "Consultorio Privado": { label: "Consultorio Privado", badge: "bg-teal-50 text-teal-700 border-teal-200" },
+  "Medico Independiente": { label: "Médico Independiente", badge: "bg-amber-50 text-amber-700 border-amber-200" },
+};
+
 function formatCurrency(value: number) {
   return new Intl.NumberFormat("es-PE", {
     style: "currency",
@@ -175,40 +182,41 @@ export default function Home() {
   // Scraping handler
   const handleScrapeIpress = () => {
     setIsScraping(true);
-    setDataMessage("Buscando nuevas clínicas de ozonoterapia y dolor en SUSALUD / CMP...");
+    setDataMessage("Buscando nuevos clientes (hospitales públicos, consultorios privados y especialistas) en SUSALUD / CMP...");
     setTimeout(() => {
-      const newClinic: Lead = {
+      const newClient: Lead = {
         id: `lead-scrape-${Date.now()}`,
-        name: "Centro Especializado de Columna y Ozono San Borja",
-        district: "San Borja, Lima",
-        specialty: "Traumatología y Dolor",
+        name: "Hospital Nacional Cayetano Heredia (Servicio de Fisiatría)",
+        district: "San Martín de Porres, Lima",
+        specialty: "Medicina de Rehabilitación y Dolor",
         score: 88,
         status: "descubierto",
-        statusNote: "IPRESS recién identificada con alta demanda en columna",
+        statusNote: "Hospital público con necesidad de unidad de dolor articular",
         directorMedico: "Dr. Víctor Cárdenas",
-        doctorSpecialty: "Cirugía Ortopédica y Columna",
+        doctorSpecialty: "Médico Fisiatra y Rehabilitador",
+        clientType: "Hospital Publico",
         hasAiDraft: false,
         draftApproved: false,
         telemetryActivity: {
           ahtmReads: 0,
           lumbarMinutes: 0,
         },
-        aiSuggestion: "Clínica privada de alta resolución. Proponer equipo Ozonobaric P con paquete de 30 kits descartables AHTm.",
+        aiSuggestion: "Hospital docente de referencia. Presentar paquete institucional con generador SEDECAL y kits certificados sin PVC.",
       };
-      setLeads((prev) => [newClinic, ...prev]);
+      setLeads((prev) => [newClient, ...prev]);
       setIsScraping(false);
-      setDataMessage("¡Scraping finalizado! 1 nueva clínica identificada y agregada al inicio con puntaje 88.");
+      setDataMessage("¡Scraping finalizado! 1 nuevo cliente institucional agregado con puntaje 88.");
     }, 1500);
   };
 
   // Re-prioritize leads by score
   const handleReprioritize = () => {
     setIsReprioritizing(true);
-    setDataMessage("Reordenando clínicas por orden de mayor interés y afinidad médica...");
+    setDataMessage("Reordenando clientes por orden de mayor interés y afinidad médica...");
     setTimeout(() => {
       setLeads((prev) => [...prev].sort((a, b) => b.score - a.score));
       setIsReprioritizing(false);
-      setDataMessage(`¡Priorización actualizada! Clínicas ordenadas con umbral activo de ${minScoreThreshold} pts.`);
+      setDataMessage(`¡Priorización actualizada! Clientes ordenados con umbral activo de ${minScoreThreshold} pts.`);
     }, 600);
   };
 
@@ -305,8 +313,8 @@ export default function Home() {
   };
 
   const tabTitle = {
-    pipeline: "Seguimiento de Clínicas",
-    prospectos: "Listado de Clínicas",
+    pipeline: "Seguimiento de Clientes",
+    prospectos: "Directorio de Clientes",
     posventa: "Clientes, Equipos y Mantenimiento",
     catalogo: "Catálogo Oficial de Equipos",
     configuracion: "Configuración y Documentos de la IA",
@@ -331,6 +339,7 @@ export default function Home() {
                   <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#0F766E]">ConfIA · Asistente Comercial</p>
                 </div>
                 <h1 className="mt-1 font-serif text-3xl font-bold text-[#071C21]">{tabTitle}</h1>
+                <p className="text-xs text-slate-500 mt-0.5">Clínicas privadas, hospitales públicos, consultorios y médicos especialistas</p>
               </div>
 
               {/* Action Buttons for Scraping, Prioritizing and Lead Actions */}
@@ -347,10 +356,10 @@ export default function Home() {
                   onClick={handleScrapeIpress}
                   disabled={isScraping}
                   className="inline-flex items-center gap-2 rounded-full border border-[#0F766E]/30 bg-white px-3.5 py-2 text-xs font-semibold text-[#071C21] shadow-sm transition hover:bg-emerald-50 hover:border-[#0F766E] disabled:opacity-50"
-                  title="Buscar automáticamente clínicas en SUSALUD y colegios médicos"
+                  title="Buscar automáticamente hospitales, consultorios y clínicas en SUSALUD y colegios médicos"
                 >
                   <Globe className={`h-3.5 w-3.5 text-[#0F766E] ${isScraping ? "animate-spin" : ""}`} />
-                  {isScraping ? "Buscando clínicas..." : "Buscar clínicas (Scraping)"}
+                  {isScraping ? "Buscando clientes..." : "Buscar nuevos clientes (Scraping)"}
                 </button>
 
                 {/* Reprioritize Button */}
@@ -359,7 +368,7 @@ export default function Home() {
                   onClick={handleReprioritize}
                   disabled={isReprioritizing}
                   className="inline-flex items-center gap-2 rounded-full border border-amber-300 bg-amber-50 px-3.5 py-2 text-xs font-semibold text-amber-900 shadow-sm transition hover:bg-amber-100 disabled:opacity-50"
-                  title="Reorganizar clínicas por su nivel de interés"
+                  title="Reorganizar clientes por su nivel de interés"
                 >
                   <RefreshCw className={`h-3.5 w-3.5 text-amber-700 ${isReprioritizing ? "animate-spin" : ""}`} />
                   {isReprioritizing ? "Reordenando..." : "Actualizar priorización"}
@@ -370,26 +379,27 @@ export default function Home() {
                   onClick={() => {
                     const sampleLead: Lead = {
                       id: `lead-manual-${Date.now()}`,
-                      name: "Policlínico Medical Sur",
+                      name: "Consultorio Dr. Juan Pérez (Medicina Física)",
                       district: "Surco, Lima",
-                      specialty: "Medicina Física",
+                      specialty: "Medicina Física y Rehabilitación",
                       score: 75,
                       status: "descubierto",
-                      statusNote: "Ingresado manualmente",
-                      directorMedico: "Dra. Patricia Wong",
+                      statusNote: "Médico en proceso de equipar consultorio",
+                      directorMedico: "Dr. Juan Pérez",
                       doctorSpecialty: "Fisiatra",
+                      clientType: "Medico Independiente",
                       hasAiDraft: false,
                       draftApproved: false,
                       telemetryActivity: { ahtmReads: 0, lumbarMinutes: 0 },
-                      aiSuggestion: "Interés en infiltraciones articulares con Ozonette.",
+                      aiSuggestion: "Interés en infiltraciones articulares con equipo Ozonette.",
                     };
                     setLeads((prev) => [sampleLead, ...prev]);
-                    setDataMessage("Nueva clínica agregada manualmente.");
+                    setDataMessage("Nuevo cliente agregado manualmente.");
                   }}
                   className="inline-flex items-center gap-2 rounded-full bg-[#0B6E4F] px-4 py-2 text-xs font-semibold text-white shadow-sm transition hover:bg-[#0A5F44]"
                 >
                   <Zap className="h-3.5 w-3.5" />
-                  Nueva clínica
+                  Nuevo cliente
                 </button>
               </div>
             </header>
@@ -406,8 +416,8 @@ export default function Home() {
             {currentTab === "pipeline" && (
               <>
                 <section className="mb-6 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-                  <MetricCard label="Clínicas en contacto" value={metrics.openLeads.toString()} accent="emerald" />
-                  <MetricCard label="Mensajes por revisar" value={metrics.pendingDrafts.toString()} accent="amber" />
+                  <MetricCard label="Clientes en contacto" value={metrics.openLeads.toString()} accent="emerald" />
+                  <MetricCard label="Propuestas por revisar" value={metrics.pendingDrafts.toString()} accent="amber" />
                   <MetricCard label="Propuestas enviadas" value={metrics.proposalsSent.toString()} accent="teal" />
                   <MetricCard label="Clientes cerrados" value={metrics.activeClients.toString()} accent="green" />
                 </section>
@@ -421,7 +431,7 @@ export default function Home() {
                           <div>
                             <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">{STATUS_META[stage].label}</p>
                             <span className="mt-1 inline-flex rounded-full bg-slate-100 px-2 py-0.5 text-xs font-semibold text-slate-700">
-                              {stageLeads.length} clínicas
+                              {stageLeads.length} clientes
                             </span>
                           </div>
                         </div>
@@ -429,7 +439,7 @@ export default function Home() {
                         <div className="space-y-3">
                           {stageLeads.length === 0 ? (
                             <div className="rounded-xl border border-dashed border-slate-200 bg-slate-50 px-3 py-6 text-center text-sm text-slate-500">
-                              No hay clínicas en esta etapa
+                              No hay clientes en esta etapa
                             </div>
                           ) : (
                             stageLeads.map((lead) => (
@@ -443,11 +453,20 @@ export default function Home() {
                                 className="w-full rounded-2xl border border-slate-200 bg-[#F9FAF7] p-3.5 text-left transition hover:-translate-y-0.5 hover:border-[#0B6E4F]/40 hover:shadow-md"
                               >
                                 <div className="mb-2 flex items-center justify-between gap-2">
-                                  <p className="font-semibold text-[#071C21] text-sm">{lead.name}</p>
-                                  <span className="rounded-full bg-[#EAFBF4] px-2 py-0.5 text-xs font-bold text-[#0B6E4F]">
+                                  <p className="font-semibold text-[#071C21] text-sm leading-snug">{lead.name}</p>
+                                  <span className="rounded-full bg-[#EAFBF4] px-2 py-0.5 text-xs font-bold text-[#0B6E4F] shrink-0">
                                     {lead.score} pts
                                   </span>
                                 </div>
+                                
+                                {lead.clientType && CLIENT_TYPE_META[lead.clientType] && (
+                                  <div className="mb-2">
+                                    <span className={`inline-block rounded-md border px-2 py-0.5 text-[10px] font-semibold ${CLIENT_TYPE_META[lead.clientType].badge}`}>
+                                      {CLIENT_TYPE_META[lead.clientType].label}
+                                    </span>
+                                  </div>
+                                )}
+
                                 <p className="text-xs text-slate-500">{lead.district} · {lead.specialty}</p>
                                 <p className="mt-2 text-xs text-slate-600 line-clamp-2">{lead.statusNote}</p>
                                 {lead.hasAiDraft && (
@@ -467,14 +486,17 @@ export default function Home() {
               </>
             )}
 
-            {/* TAB: LISTADO DE CLÍNICAS */}
+            {/* TAB: DIRECTORIO DE CLIENTES */}
             {currentTab === "prospectos" && (
               <section className="grid gap-6 xl:grid-cols-[1.2fr_0.8fr]">
                 <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
                   <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
-                    <h2 className="font-serif text-2xl font-bold text-[#071C21]">Directorio de Clínicas</h2>
+                    <div>
+                      <h2 className="font-serif text-2xl font-bold text-[#071C21]">Directorio de Clientes</h2>
+                      <p className="text-xs text-slate-500 mt-0.5">Hospitales públicos, clínicas privadas, consultorios y médicos especialistas</p>
+                    </div>
                     <div className="flex items-center gap-2">
-                      <span className="text-xs text-slate-500">Total: {leads.length} clínicas</span>
+                      <span className="text-xs text-slate-500">Total: {leads.length} clientes</span>
                     </div>
                   </div>
                   <div className="space-y-3">
@@ -489,9 +511,16 @@ export default function Home() {
                         className="flex w-full items-center justify-between rounded-2xl border border-slate-200 bg-[#F8FAF9] p-4 text-left transition hover:border-[#0B6E4F]/30 hover:bg-white"
                       >
                         <div>
-                          <p className="font-semibold text-[#071C21]">{lead.name}</p>
-                          <p className="text-xs text-slate-500 mt-0.5">{lead.district} · {lead.specialty}</p>
-                          <p className="text-xs text-slate-600 mt-1">Contacto: {lead.directorMedico} ({lead.doctorSpecialty})</p>
+                          <div className="flex items-center gap-2">
+                            <p className="font-semibold text-[#071C21]">{lead.name}</p>
+                            {lead.clientType && CLIENT_TYPE_META[lead.clientType] && (
+                              <span className={`rounded-md border px-2 py-0.5 text-[10px] font-semibold ${CLIENT_TYPE_META[lead.clientType].badge}`}>
+                                {CLIENT_TYPE_META[lead.clientType].label}
+                              </span>
+                            )}
+                          </div>
+                          <p className="text-xs text-slate-500 mt-1">{lead.district} · {lead.specialty}</p>
+                          <p className="text-xs text-slate-600 mt-0.5">Responsable: {lead.directorMedico} ({lead.doctorSpecialty})</p>
                         </div>
                         <div className="text-right shrink-0 ml-4">
                           <span className="inline-flex rounded-full bg-emerald-100 px-2.5 py-1 text-xs font-bold text-emerald-800">
@@ -512,7 +541,7 @@ export default function Home() {
                       <p className="text-xs font-semibold uppercase tracking-[0.2em]">Criterios de Priorización</p>
                     </div>
                     <p className="mt-2 text-xs text-slate-600">
-                      Ajusta el puntaje mínimo requerido para que una clínica sea clasificada como de alta prioridad.
+                      Ajusta el puntaje mínimo requerido para que un cliente sea clasificado como de alta prioridad.
                     </p>
                     <div className="mt-4 space-y-3">
                       <div className="flex items-center justify-between text-sm">
@@ -537,9 +566,9 @@ export default function Home() {
                     </div>
                   </div>
 
-                  {/* Top Priority Clinics */}
+                  {/* Top Priority Clients */}
                   <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-                    <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">Clínicas Más Interesadas</p>
+                    <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">Clientes Más Interesados</p>
                     <div className="mt-4 space-y-3">
                       {leads
                         .filter((l) => l.score >= minScoreThreshold)
@@ -874,7 +903,7 @@ export default function Home() {
           <div className="flex h-full flex-col">
             <div className="flex items-center justify-between border-b border-slate-200 px-6 py-4">
               <div>
-                <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">Ficha de la Clínica</p>
+                <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">Ficha del Cliente</p>
                 <h2 className="mt-1 font-serif text-2xl font-bold text-[#071C21]">{selectedLead.name}</h2>
               </div>
               <button

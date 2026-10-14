@@ -50,6 +50,7 @@ export interface Lead {
   telemetryAlert?: boolean;
   telemetryActivity: TelemetryActivity;
   aiSuggestion: string;
+  clientType?: 'Clinica' | 'Hospital Publico' | 'Consultorio Privado' | 'Medico Independiente';
   outboundDraft?: OutboundDraft;
   roiProposal?: RoiProposal;
   digemidDossier?: DigemidDossier;

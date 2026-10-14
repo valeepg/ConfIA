@@ -21,9 +21,9 @@ export const Sidebar: React.FC<SidebarProps> = ({
   onSelectTab,
 }) => {
   const navItems = [
-    { id: 'pipeline', label: 'Seguimiento de Clínicas', icon: Kanban },
-    { id: 'prospectos', label: 'Listado de Clínicas', icon: Users },
-    { id: 'posventa', label: 'Clientes y Mantenimiento', icon: Repeat },
+    { id: 'pipeline', label: 'Seguimiento de Clientes', icon: Kanban },
+    { id: 'prospectos', label: 'Directorio de Clientes', icon: Users },
+    { id: 'posventa', label: 'Equipos y Mantenimiento', icon: Repeat },
     { id: 'catalogo', label: 'Catálogo de Equipos', icon: ShoppingBag },
     { id: 'configuracion', label: 'Configuración y Regulación', icon: Settings },
     { id: 'documentos', label: 'Esquema de Datos', icon: FileText },
