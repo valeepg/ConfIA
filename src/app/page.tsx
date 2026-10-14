@@ -488,98 +488,196 @@ export default function Home() {
 
             {/* TAB: DIRECTORIO DE CLIENTES */}
             {currentTab === "prospectos" && (
-              <section className="grid gap-6 xl:grid-cols-[1.2fr_0.8fr]">
-                <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-                  <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
+              <section className="grid gap-6 xl:grid-cols-[1.3fr_0.7fr]">
+                <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm space-y-4">
+                  <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 pb-4">
                     <div>
                       <h2 className="font-serif text-2xl font-bold text-[#071C21]">Directorio de Clientes</h2>
-                      <p className="text-xs text-slate-500 mt-0.5">Hospitales públicos, clínicas privadas, consultorios y médicos especialistas</p>
+                      <p className="text-xs text-slate-500 mt-0.5">Hospitales públicos, clínicas privadas, consultorios y médicos independientes</p>
                     </div>
                     <div className="flex items-center gap-2">
-                      <span className="text-xs text-slate-500">Total: {leads.length} clientes</span>
+                      <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-slate-100 text-slate-700">
+                        {leads.length} registros
+                      </span>
+                      <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-amber-100 text-amber-900 border border-amber-300 flex items-center gap-1">
+                        <Award className="h-3.5 w-3.5 text-amber-600" />
+                        {leads.filter((l) => l.score >= minScoreThreshold).length} alta prioridad
+                      </span>
                     </div>
                   </div>
+
+                  {/* Listado con diferenciación visual dorada para clientes de alto interés */}
                   <div className="space-y-3">
-                    {leads.map((lead) => (
-                      <button
-                        key={lead.id}
-                        type="button"
-                        onClick={() => {
-                          setSelectedLeadId(lead.id);
-                          setDrawerOpen(true);
-                        }}
-                        className="flex w-full items-center justify-between rounded-2xl border border-slate-200 bg-[#F8FAF9] p-4 text-left transition hover:border-[#0B6E4F]/30 hover:bg-white"
-                      >
-                        <div>
-                          <div className="flex items-center gap-2">
-                            <p className="font-semibold text-[#071C21]">{lead.name}</p>
-                            {lead.clientType && CLIENT_TYPE_META[lead.clientType] && (
-                              <span className={`rounded-md border px-2 py-0.5 text-[10px] font-semibold ${CLIENT_TYPE_META[lead.clientType].badge}`}>
-                                {CLIENT_TYPE_META[lead.clientType].label}
-                              </span>
+                    {leads.map((lead) => {
+                      const isHighPriority = lead.score >= minScoreThreshold;
+                      return (
+                        <button
+                          key={lead.id}
+                          type="button"
+                          onClick={() => {
+                            setSelectedLeadId(lead.id);
+                            setDrawerOpen(true);
+                          }}
+                          className={`flex w-full items-center justify-between rounded-2xl border p-4 text-left transition-all hover:shadow-md ${
+                            isHighPriority
+                              ? "bg-gradient-to-r from-amber-50/70 via-yellow-50/40 to-white border-amber-300 shadow-sm ring-1 ring-amber-200/60 hover:border-amber-400"
+                              : "bg-[#F8FAF9] border-slate-200 hover:border-[#0B6E4F]/30 hover:bg-white"
+                          }`}
+                        >
+                          <div>
+                            <div className="flex flex-wrap items-center gap-2">
+                              {isHighPriority && (
+                                <span className="inline-flex items-center gap-1 rounded-full bg-gradient-to-r from-amber-500 to-yellow-500 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-white shadow-xs">
+                                  <Award className="h-3 w-3" />
+                                  Prioridad Alta
+                                </span>
+                              )}
+                              <p className={`font-semibold text-sm ${isHighPriority ? "text-[#071C21] font-bold" : "text-[#071C21]"}`}>{lead.name}</p>
+                              {lead.clientType && CLIENT_TYPE_META[lead.clientType] && (
+                                <span className={`rounded-md border px-2 py-0.5 text-[10px] font-semibold ${CLIENT_TYPE_META[lead.clientType].badge}`}>
+                                  {CLIENT_TYPE_META[lead.clientType].label}
+                                </span>
+                              )}
+                            </div>
+                            <p className="text-xs text-slate-500 mt-1.5">{lead.district} · {lead.specialty}</p>
+                            <p className="text-xs text-slate-600 mt-0.5">Responsable: <strong className="text-slate-800">{lead.directorMedico}</strong> ({lead.doctorSpecialty})</p>
+                          </div>
+
+                          <div className="text-right shrink-0 ml-4">
+                            {isHighPriority ? (
+                              <div className="inline-flex flex-col items-end">
+                                <span className="inline-flex items-center gap-1 rounded-full bg-gradient-to-r from-amber-100 to-yellow-100 border border-amber-300 px-3 py-1 text-xs font-extrabold text-amber-900 shadow-xs">
+                                  <Sparkles className="h-3.5 w-3.5 text-amber-600" />
+                                  {lead.score} pts
+                                </span>
+                                <span className="text-[10px] font-bold text-amber-700 mt-1 uppercase tracking-wider">Interés Máximo</span>
+                              </div>
+                            ) : (
+                              <div className="inline-flex flex-col items-end">
+                                <span className="inline-flex rounded-full bg-slate-100 border border-slate-200 px-2.5 py-1 text-xs font-semibold text-slate-700">
+                                  {lead.score} pts
+                                </span>
+                                <p className="mt-1 text-xs text-slate-500">{STATUS_META[lead.status].label}</p>
+                              </div>
                             )}
                           </div>
-                          <p className="text-xs text-slate-500 mt-1">{lead.district} · {lead.specialty}</p>
-                          <p className="text-xs text-slate-600 mt-0.5">Responsable: {lead.directorMedico} ({lead.doctorSpecialty})</p>
-                        </div>
-                        <div className="text-right shrink-0 ml-4">
-                          <span className="inline-flex rounded-full bg-emerald-100 px-2.5 py-1 text-xs font-bold text-emerald-800">
-                            {lead.score} puntos
-                          </span>
-                          <p className="mt-1.5 text-xs font-medium text-slate-500">{STATUS_META[lead.status].label}</p>
-                        </div>
-                      </button>
-                    ))}
+                        </button>
+                      );
+                    })}
                   </div>
                 </div>
 
                 <div className="space-y-6">
-                  {/* Prioritization Settings Card */}
-                  <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-                    <div className="flex items-center gap-2 text-[#0B6E4F]">
-                      <Sliders className="h-5 w-5" />
-                      <p className="text-xs font-semibold uppercase tracking-[0.2em]">Criterios de Priorización</p>
-                    </div>
-                    <p className="mt-2 text-xs text-slate-600">
-                      Ajusta el puntaje mínimo requerido para que un cliente sea clasificado como de alta prioridad.
-                    </p>
-                    <div className="mt-4 space-y-3">
-                      <div className="flex items-center justify-between text-sm">
-                        <span className="text-slate-700 font-medium">Umbral mínimo de interés:</span>
-                        <span className="font-bold text-[#0B6E4F]">{minScoreThreshold} pts</span>
+                  {/* Panel de Criterios de Priorización Mejorado */}
+                  <div className="rounded-2xl border-2 border-amber-300 bg-gradient-to-b from-amber-50/80 to-white p-5 shadow-sm">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2 text-amber-900">
+                        <Sliders className="h-5 w-5 text-amber-600" />
+                        <h3 className="font-semibold text-sm uppercase tracking-[0.18em]">Criterios de Priorización</h3>
                       </div>
+                      <span className="rounded-full bg-amber-200/80 px-2.5 py-0.5 text-xs font-bold text-amber-900">
+                        Control Interactivo
+                      </span>
+                    </div>
+
+                    <p className="mt-2 text-xs text-slate-600 leading-relaxed">
+                      Filtra y destaca en dorado automáticamente los clientes con mayor probabilidad de adopción según su afinidad médica y volumen de pacientes.
+                    </p>
+
+                    <div className="mt-4 rounded-xl bg-white p-4 border border-amber-200 shadow-xs space-y-3">
+                      <div className="flex items-center justify-between text-xs">
+                        <span className="text-slate-700 font-semibold">Umbral para Destacar en Dorado:</span>
+                        <span className="font-mono text-sm font-bold text-amber-800 bg-amber-100 px-2.5 py-0.5 rounded-full border border-amber-300">
+                          ≥ {minScoreThreshold} puntos
+                        </span>
+                      </div>
+
                       <input
                         type="range"
-                        min="40"
-                        max="95"
+                        min="50"
+                        max="90"
+                        step="5"
                         value={minScoreThreshold}
                         onChange={(e) => setMinScoreThreshold(Number(e.target.value))}
-                        className="w-full accent-[#0B6E4F]"
+                        className="w-full accent-amber-500 cursor-pointer"
                       />
+
+                      <div className="flex justify-between text-[10px] text-slate-400 font-medium">
+                        <span>50 pts (Más permisivo)</span>
+                        <span>70 pts (Recomendado)</span>
+                        <span>90 pts (Solo líderes)</span>
+                      </div>
+                    </div>
+
+                    {/* Presets rápidos */}
+                    <div className="mt-3 flex items-center gap-1.5">
+                      <span className="text-[11px] text-slate-500 font-medium">Presets:</span>
                       <button
                         type="button"
-                        onClick={handleReprioritize}
-                        className="w-full rounded-xl bg-slate-900 py-2.5 text-xs font-semibold text-white transition hover:bg-slate-800"
+                        onClick={() => setMinScoreThreshold(70)}
+                        className={`px-2.5 py-1 rounded-lg text-xs font-semibold transition ${
+                          minScoreThreshold === 70 ? "bg-amber-600 text-white" : "bg-white text-slate-600 border border-slate-200 hover:bg-slate-50"
+                        }`}
                       >
-                        Aplicar y reordenar listado
+                        Interés Alto (≥70)
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setMinScoreThreshold(80)}
+                        className={`px-2.5 py-1 rounded-lg text-xs font-semibold transition ${
+                          minScoreThreshold === 80 ? "bg-amber-600 text-white" : "bg-white text-slate-600 border border-slate-200 hover:bg-slate-50"
+                        }`}
+                      >
+                        Muy Alto (≥80)
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setMinScoreThreshold(90)}
+                        className={`px-2.5 py-1 rounded-lg text-xs font-semibold transition ${
+                          minScoreThreshold === 90 ? "bg-amber-600 text-white" : "bg-white text-slate-600 border border-slate-200 hover:bg-slate-50"
+                        }`}
+                      >
+                        Top VIP (≥90)
                       </button>
                     </div>
+
+                    <button
+                      type="button"
+                      onClick={handleReprioritize}
+                      disabled={isReprioritizing}
+                      className="mt-4 w-full rounded-xl bg-gradient-to-r from-amber-600 to-yellow-600 py-2.5 text-xs font-bold text-white shadow-sm transition hover:from-amber-700 hover:to-yellow-700 flex items-center justify-center gap-2"
+                    >
+                      <RefreshCw className={`h-3.5 w-3.5 ${isReprioritizing ? "animate-spin" : ""}`} />
+                      {isReprioritizing ? "Reordenando..." : "Reordenar directorio por puntaje"}
+                    </button>
                   </div>
 
-                  {/* Top Priority Clients */}
-                  <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-                    <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">Clientes Más Interesados</p>
-                    <div className="mt-4 space-y-3">
+                  {/* Cuadro destacado de los Top Clientes */}
+                  <div className="rounded-2xl border border-amber-200 bg-white p-5 shadow-sm">
+                    <div className="flex items-center gap-2 text-amber-900 mb-3">
+                      <Award className="h-4 w-4 text-amber-600" />
+                      <p className="text-xs font-bold uppercase tracking-[0.18em]">Clientes Más Interesados ({leads.filter((l) => l.score >= minScoreThreshold).length})</p>
+                    </div>
+                    <div className="space-y-2.5">
                       {leads
                         .filter((l) => l.score >= minScoreThreshold)
-                        .slice(0, 3)
+                        .slice(0, 4)
                         .map((lead) => (
-                          <div key={lead.id} className="rounded-xl border border-emerald-100 bg-emerald-50/50 p-3">
+                          <div
+                            key={lead.id}
+                            onClick={() => {
+                              setSelectedLeadId(lead.id);
+                              setDrawerOpen(true);
+                            }}
+                            className="cursor-pointer rounded-xl border border-amber-200/80 bg-gradient-to-r from-amber-50 to-yellow-50/50 p-3 transition hover:shadow-xs hover:border-amber-400"
+                          >
                             <div className="flex items-center justify-between">
-                              <p className="font-semibold text-[#071C21] text-sm">{lead.name}</p>
-                              <span className="text-sm font-bold text-[#0B6E4F]">{lead.score} pts</span>
+                              <p className="font-semibold text-[#071C21] text-xs truncate max-w-[200px]">{lead.name}</p>
+                              <span className="text-xs font-extrabold text-amber-900 bg-amber-200/80 px-2 py-0.5 rounded-full">
+                                {lead.score} pts
+                              </span>
                             </div>
-                            <p className="mt-1 text-xs text-slate-600">{lead.directorMedico} · {lead.specialty}</p>
+                            <p className="mt-1 text-[11px] text-slate-600 truncate">{lead.directorMedico} · {lead.specialty}</p>
                           </div>
                         ))}
                     </div>
