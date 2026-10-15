@@ -97,11 +97,11 @@ export const TableView: React.FC<TableViewProps> = ({
                     {lead.telemetryAlert ? (
                       <span className="text-[11px] font-bold text-[#B45309] bg-[#FEF3C7] px-2 py-0.5 rounded-full border border-[#FDE68A] flex items-center gap-1 w-max">
                         <span className="w-1.5 h-1.5 rounded-full bg-[#D97706] animate-pulse"></span>
-                        Leyendo ahora ({lead.telemetryActivity?.lumbarMinutes ?? 0} min)
+                        Leyendo ahora ({lead.telemetryActivity.lumbarMinutes} min)
                       </span>
                     ) : (
                       <span className="text-xs text-gray-400">
-                        {(lead.telemetryActivity?.ahtmReads ?? 0) > 0 ? `${lead.telemetryActivity?.ahtmReads ?? 0} artículos` : 'Sin actividad'}
+                        {lead.telemetryActivity.ahtmReads > 0 ? `${lead.telemetryActivity.ahtmReads} artículos` : 'Sin actividad'}
                       </span>
                     )}
                   </td>

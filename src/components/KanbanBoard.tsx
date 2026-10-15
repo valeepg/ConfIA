@@ -111,18 +111,18 @@ export const KanbanBoard: React.FC<KanbanBoardProps> = ({
                       <div className="mb-3">
                         <div className="flex items-center justify-between text-xs mb-1">
                           <span className="font-medium text-gray-500">Nivel de interés</span>
-                          <span className="font-bold text-[#0D9488] font-mono">{lead.score === null ? '—' : `${lead.score}%`}</span>
+                          <span className="font-bold text-[#0D9488] font-mono">{lead.score}%</span>
                         </div>
                         <div className="w-full bg-gray-100 h-1.5 rounded-full overflow-hidden">
                           <div
                             className={`h-full rounded-full transition-all duration-500 ${
-                              lead.score !== null && lead.score >= 85
+                              lead.score >= 85
                                 ? 'bg-gradient-to-r from-[#0D9488] to-[#10B981]'
-                                : lead.score !== null && lead.score >= 70
+                                : lead.score >= 70
                                 ? 'bg-[#0D9488]'
                                 : 'bg-[#F59E0B]'
                             }`}
-                            style={{ width: `${lead.score ?? 0}%` }}
+                            style={{ width: `${lead.score}%` }}
                           />
                         </div>
                       </div>

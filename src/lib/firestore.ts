@@ -11,11 +11,8 @@ import { INITIAL_CONSUMABLES, INITIAL_LEADS, INITIAL_MAINTENANCE, INITIAL_TRAINI
 import type { InstalledBaseRecord, Lead, ProposalDocument, ProposalType } from '@/types';
 import { firebaseDb } from './firebase';
 
-// Las dos proyecciones que escribe la ingesta: la MISMA información que `prospects` y `proposals`,
-// con los nombres de campo que ya usa esta página (ver `docs/para-la-pagina.md` §7). Las escribe el
-// job de ingesta en cada corrida; desde acá solo se leen y se mueven de estado.
-const PROSPECTS_COLLECTION = 'leads';
-const PROPOSALS_COLLECTION = 'approvals';
+const PROSPECTS_COLLECTION = 'prospects';
+const PROPOSALS_COLLECTION = 'proposals';
 const INSTALLED_BASE_COLLECTION = 'installed_base';
 
 function withoutUndefined<T>(value: T): T {

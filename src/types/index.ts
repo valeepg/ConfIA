@@ -27,16 +27,11 @@ export interface DigemidDossier {
 }
 
 export interface OutboundDraft {
-  /** `null`: ninguna fuente pública trae el nombre de la dirección médica del establecimiento. */
-  recipientName: string | null;
+  recipientName: string;
   recipientRole: string;
   subject: string;
   body: string;
-  /**
-   * `'Teléfono'` está porque es el ÚNICO canal que los datos sostienen: hay **cero** correos en los
-   * 3.288 prospectos, así que `'Email'` sería una promesa que no se puede cumplir.
-   */
-  suggestedChannel: 'Email' | 'LinkedIn' | 'WhatsApp Directo' | 'Teléfono';
+  suggestedChannel: 'Email' | 'LinkedIn' | 'WhatsApp Directo';
 }
 
 export interface Lead {
@@ -44,22 +39,16 @@ export interface Lead {
   name: string;
   district: string;
   specialty: string;
-  /**
-   * `null` en los prospectos que vienen de búsqueda (el segmento): el puntaje es del padrón de
-   * SUSALUD y no aplica. **No es 0** — mostrarlo como 0 los trataría como los peores.
-   */
-  score: number | null;
+  score: number;
   status: PipelineStatus;
   statusNote: string;
-  /** `null`: ninguna fuente pública publica el nombre de la dirección médica del establecimiento. */
-  directorMedico: string | null;
-  doctorSpecialty: string | null;
+  directorMedico: string;
+  doctorSpecialty: string;
   hasAiDraft: boolean;
   draftType?: 'outbound' | 'roi' | 'dossier' | 'consumibles';
   draftApproved: boolean;
   telemetryAlert?: boolean;
-  /** Todavía no existe telemetría: es del Módulo 2/3, así que es opcional. */
-  telemetryActivity?: TelemetryActivity;
+  telemetryActivity: TelemetryActivity;
   aiSuggestion: string;
   clientType?: 'Clinica' | 'Hospital Publico' | 'Consultorio Privado' | 'Medico Independiente';
   outboundDraft?: OutboundDraft;

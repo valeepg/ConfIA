@@ -1,14 +1,5 @@
 rules_version = '2';
 
-// Reglas de Firestore del proyecto.
-//
-// Estas reglas son las del CRM (roles `admin`, `sales`, `medical`, `support` en `users/{uid}`) más
-// las dos colecciones que agrega la ingesta. **No reemplazan nada**: los cuatro bloques originales
-// quedan palabra por palabra como estaban.
-//
-// La ingesta NO pasa por acá: escribe con su cuenta de servicio, y el Admin SDK omite las reglas por
-// diseño. Lo que estas reglas gobiernan es lo que la PÁGINA puede leer y escribir desde el navegador.
-
 service cloud.firestore {
   match /databases/{database}/documents {
     function signedIn() {
@@ -54,35 +45,6 @@ service cloud.firestore {
         || (request.auth.uid == userId
           && request.resource.data.role == resource.data.role);
       allow delete: if hasRole('admin');
-    }
-
-    // ── Lo que agrega la ingesta ──────────────────────────────────────────────────────────────
-    //
-    // `leads` y `approvals` son las MISMAS filas que `prospects` y `proposals`, con los nombres de
-    // campo que ya usa el frontend (ver `docs/para-la-pagina.md` §7 del módulo de ingesta). Por eso
-    // llevan exactamente los mismos permisos que sus hermanas: no hay razón para que una proyección
-    // sea más o menos accesible que el dato del que sale.
-    //
-    // Sin estos dos bloques, la página recibe «permiso denegado» AUNQUE los datos existan: en
-    // Firestore, todo lo que no está nombrado queda cerrado. Desde el navegador eso no se ve como un
-    // error de permisos, se ve como una base vacía.
-    match /leads/{leadId} {
-      allow read: if canReadProspects();
-      allow create, update: if canWriteProspects();
-      allow delete: if hasRole('admin');
-    }
-
-    match /approvals/{approvalId} {
-      allow read: if hasRole('admin') || hasRole('sales') || hasRole('medical');
-      allow create, update: if hasRole('admin') || hasRole('sales');
-      allow delete: if hasRole('admin');
-    }
-
-    // La procedencia de cada corrida de ingesta: qué archivos la produjeron y desde qué instante se
-    // considera visto lo que ya estaba. La escribe la cuenta de servicio; desde la página solo se lee.
-    match /confia2_meta/{documento} {
-      allow read: if canReadProspects();
-      allow write: if false;
     }
   }
 }

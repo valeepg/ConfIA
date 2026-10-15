@@ -84,7 +84,6 @@ export const LeadDetailDrawer: React.FC<LeadDetailDrawerProps> = ({
         </div>
 
         {/* Section: What they've been reading */}
-        {lead.telemetryActivity && (
         <div>
           <div className="flex items-center justify-between mb-3">
             <h3 className="text-xs font-bold uppercase tracking-wider text-gray-500 flex items-center gap-1.5">
@@ -142,7 +141,6 @@ export const LeadDetailDrawer: React.FC<LeadDetailDrawerProps> = ({
             )}
           </div>
         </div>
-        )}
 
         {/* Section: AI Suggestion */}
         <div className="bg-[#071C21] rounded-2xl p-5 text-white border border-[#0E2E33] shadow-md space-y-3.5">
