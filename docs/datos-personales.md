@@ -52,18 +52,40 @@ que habla el vendedor, su teléfono— va cifrado con una clave que **no vive en
 en un proyecto con un permiso IAM separado. Así, una credencial que lee Firestore **no alcanza** para
 leer el dato: es exactamente la amenaza de la sección 1.
 
-## 4. Lo que hay que decidir antes de escribir código
+## 4. Decidido
 
-| Decisión | Opciones | Recomendación |
+| Decisión | Qué se decidió |
+|---|---|
+| ¿Se guarda el DNI? | **Sí, hasheado.** Nunca en claro: el hash alcanza para buscar y comparar, y no se puede revertir |
+| ¿Quién custodia la clave? | **Secret Manager** (la pimienta, `PERSONAL_DATA_PEPPER`) |
+| ¿Qué se protege? | **Los campos que sean información personal de una persona física** |
+
+### Cómo queda cada campo
+
+| Campo | Cómo se guarda | Por qué |
 |---|---|---|
-| ¿Se guarda el DNI? | sí / no / solo hash | **No** hoy. Si el negocio lo necesita para el contrato, **hash**, nunca en claro |
-| ¿Quién custodia la clave? | Cloud KMS / Secret Manager | **Cloud KMS**, con IAM separado del de Firestore y plan de rotación |
-| ¿Qué se cifra a nivel aplicación? | — | Solo lo que identifique a una persona física: nombre del contacto, su teléfono, su correo |
-| ¿Quién puede descifrar? | — | El dueño y el vendedor, **en la pantalla**. La ingesta, nunca |
+| DNI, número de documento | **Hash con pimienta**, irreversible | Solo hay que comparar: nunca hay que mostrarlo |
+| Nombre del contacto, su teléfono, su correo | **Cifrado reversible** (especificado, no implementado) | El vendedor tiene que leerlos para hablar con la persona |
+| Nombre, teléfono y dirección del establecimiento | En claro, como hoy | Persona jurídica, dato público (ver §2) |
 
-Mientras esas cuatro no estén decididas, `installed_base` puede construirse con los datos del
-establecimiento (que no son personales) y **dejar los campos de persona vacíos**, igual que se hizo
-con `directorMedico`: vacío declarado vale más que dato inventado o mal protegido.
+### Dos consecuencias que no son obvias
+
+1. **La pimienta necesita un permiso separado del de Firestore.** Si el mismo permiso da acceso a la
+   base y al secreto, la pimienta no protege de la amenaza de §1. Y tiene que poder **rotarse**: una
+   pimienta cacheada en una variable global de larga vida es una pimienta que no se puede rotar.
+   Ojo con el costo de rotar: los datos ya hasheados **dejan de encontrarse** hasta re-hashearlos.
+2. **El dato personal se escribe desde el backend, no desde el navegador.** La página escribe hoy
+   directo a Firestore, y eso está bien para datos públicos. Para un dato personal no: una clave que
+   se usa en la página viaja al navegador, o sea que está en la máquina de cualquiera que abra las
+   herramientas de desarrollo. **`installed_base` con datos personales tiene que escribirse por la
+   API**, que es la única que tiene la pimienta.
+
+### Estado de la implementación
+
+- **Hecho y probado:** el hash con pimienta (`backend/app/personal_data.py`, solo biblioteca estándar,
+  sin dependencias nuevas) y sus 8 tests.
+- **Especificado, no implementado:** el cifrado reversible de los campos que hay que leer. Necesita
+  una dependencia de cifrado y el punto 2 de arriba.
 
 ## 5. Tres cosas que **no** hay que hacer
 
