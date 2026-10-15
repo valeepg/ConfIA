@@ -132,14 +132,6 @@ export const INITIAL_LEADS: Lead[] = [
       projectedSessionsMonth: 40,
       estimatedNetMonthly: 5800,
     },
-    digemidDossier: {
-      registryNumber: 'DB7384E',
-      classification: 'Dispositivo Médico Clase IIb (SEDECAL, España)',
-      calibrationCertificate: 'Calibración de fábrica — SEDECAL ISO 13485',
-      goodPracticesCertificate: 'Droguería Autorizada Tecnology Care SRL — DIGEMID',
-      informedConsentTemplate: 'Formato de consentimiento informado para autohemoterapia mayor (AHTm)',
-      verified: true,
-    },
   },
   {
     id: 'lead-6',
@@ -188,14 +180,6 @@ export const INITIAL_LEADS: Lead[] = [
       lumbarMinutes: 8,
     },
     aiSuggestion: 'El equipo de farmacia y biomédica está validando los certificados técnicos de calibración. Mantener seguimiento.',
-    digemidDossier: {
-      registryNumber: 'DB7384E',
-      classification: 'Dispositivo Médico Clase IIb — SEDECAL',
-      calibrationCertificate: 'Calibración SEDECAL ISO 13485',
-      goodPracticesCertificate: 'Droguería Autorizada Tecnology Care SRL',
-      informedConsentTemplate: 'Formato estándar AHTm / MINSA',
-      verified: true,
-    },
   },
   {
     id: 'lead-8',

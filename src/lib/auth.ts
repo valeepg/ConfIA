@@ -38,17 +38,16 @@ export async function signOutUser() {
   await signOut(firebaseAuth);
 }
 
-export async function getFirebaseIdToken(): Promise<string> {
+/**
+ * Devuelve el token de Firebase si hay sesión; si no, null.
+ * Por ahora la IA funciona sin login (demo). El backend decide si exige el token.
+ */
+export async function getFirebaseIdToken(): Promise<string | null> {
   if (!firebaseAuth?.currentUser) {
-    throw new Error('Debes iniciar sesión para usar la generación de IA.');
+    return null;
   }
 
-  const token = await firebaseAuth.currentUser.getIdToken();
-  if (!token) {
-    throw new Error('No se pudo obtener el token de Firebase.');
-  }
-
-  return token;
+  return firebaseAuth.currentUser.getIdToken();
 }
 
 export async function getUserRole(uid: string): Promise<AppRole | null> {

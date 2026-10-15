@@ -31,6 +31,8 @@ import {
   FileCheck
 } from "lucide-react";
 
+import { OutboundApprovalModal } from "@/components/OutboundApprovalModal";
+import { RoiSimulator } from "@/components/RoiSimulator";
 import { Sidebar } from "@/components/Sidebar";
 import {
   DATASET_ALERTS,
@@ -43,10 +45,10 @@ import {
   INITIAL_REGULATORY_FILES
 } from "@/data/mockData";
 import { getUserRole, signInWithGoogle, signOutUser, subscribeToAuth, type AppRole } from "@/lib/auth";
-import { generateDossier, generateOutbound, generateRoi } from "@/lib/aiApi";
+import { downloadDossier, generateDossier, generateOutbound, generateRoi } from "@/lib/aiApi";
 import { firebaseReady } from "@/lib/firebase";
 import { getProspects, proposalId, saveProposal, saveProspect, seedInstalledBaseFromMocks, seedProspectsFromMocks } from "@/lib/firestore";
-import type { Lead, PipelineStatus, EquipmentItem, RegulatoryFile } from "@/types";
+import type { Lead, PipelineStatus, EquipmentItem, RegulatoryFile, OutboundSendResult } from "@/types";
 
 const STATUS_META: Record<PipelineStatus, { label: string; badge: string }> = {
   descubierto: { label: "Descubierto", badge: "bg-slate-100 text-slate-700 border-slate-200" },
@@ -67,14 +69,6 @@ const CLIENT_TYPE_META: Record<string, { label: string; badge: string }> = {
   "Consultorio Privado": { label: "Consultorio Privado", badge: "bg-cyan-50 text-cyan-800 border-cyan-200" },
   "Medico Independiente": { label: "Médico Independiente", badge: "bg-orange-50 text-orange-800 border-orange-200" },
 };
-
-function formatCurrency(value: number) {
-  return new Intl.NumberFormat("es-PE", {
-    style: "currency",
-    currency: "PEN",
-    maximumFractionDigits: 0,
-  }).format(value);
-}
 
 function formatUSD(value: number) {
   return new Intl.NumberFormat("en-US", {
@@ -246,7 +240,7 @@ export default function Home() {
           : type === "roi"
             ? nextLead.roiProposal
             : type === "dossier"
-              ? nextLead.digemidDossier
+              ? nextLead.dossierDocument
               : undefined;
 
         if (aiContent && authUser) {
@@ -271,6 +265,33 @@ export default function Home() {
     }
 
     setApprovalTarget(null);
+  };
+
+  // Tras un envío real por Gmail, el prospecto pasa de Descubierto a Contactado.
+  const handleOutboundSent = (leadId: string, result: OutboundSendResult) => {
+    setLeads((current) =>
+      current.map((lead) =>
+        lead.id !== leadId
+          ? lead
+          : {
+              ...lead,
+              status: "contactado",
+              statusNote: "Correo enviado por Gmail",
+              hasAiDraft: false,
+              draftApproved: true,
+              lastOutboundSentAt: result.sentAt,
+            },
+      ),
+    );
+    setApprovalTarget(null);
+    setDataMessage(`Correo enviado a ${result.to}. Prospecto movido a Contactado.`);
+  };
+
+  // El simulador de ROI calcula en el backend y no necesita un borrador previo del LLM.
+  const openRoiSimulator = () => {
+    if (!selectedLead) return;
+    setDataMessage(null);
+    setApprovalTarget({ lead: selectedLead, type: "roi" });
   };
 
   const handleGenerate = async (type: "outbound" | "roi" | "dossier") => {
@@ -299,7 +320,7 @@ export default function Home() {
       } else if (type === "roi") {
         nextLead = { ...baseLead, roiProposal: content as Awaited<ReturnType<typeof generateRoi>> };
       } else {
-        nextLead = { ...baseLead, digemidDossier: content as Awaited<ReturnType<typeof generateDossier>> };
+        nextLead = { ...baseLead, dossierDocument: content as Awaited<ReturnType<typeof generateDossier>> };
       }
 
       setLeads((current) => current.map((lead) => lead.id === nextLead.id ? nextLead : lead));
@@ -309,6 +330,17 @@ export default function Home() {
       setDataMessage(error instanceof Error ? `No se pudo generar: ${error.message}` : "Error al generar.");
     } finally {
       setGeneratingType(null);
+    }
+  };
+
+  const handleDownloadDossier = async (format: "pdf" | "markdown") => {
+    const dossier = approvalTarget?.lead.dossierDocument;
+    if (!dossier) return;
+
+    try {
+      await downloadDossier(dossier, format);
+    } catch (error: unknown) {
+      setDataMessage(error instanceof Error ? `No se pudo descargar: ${error.message}` : "Error al descargar.");
     }
   };
 
@@ -1128,7 +1160,7 @@ export default function Home() {
                   <button
                     type="button"
                     disabled={generatingType !== null}
-                    onClick={() => handleGenerate("roi")}
+                    onClick={openRoiSimulator}
                     className="inline-flex items-center justify-center gap-2 rounded-xl border border-sky-200 bg-sky-50 px-4 py-2.5 text-xs font-bold text-[#0369A1] transition hover:bg-sky-100 disabled:opacity-60"
                   >
                     <DollarSign className="h-3.5 w-3.5 text-[#0284C7]" />
@@ -1152,10 +1184,19 @@ export default function Home() {
       )}
 
       {/* MODAL DE APROBACIÓN HUMANA */}
-      {approvalTarget && (
+      {approvalTarget && approvalTarget.type === "outbound" && approvalTarget.lead.outboundDraft && (
+        <OutboundApprovalModal
+          lead={approvalTarget.lead}
+          draft={approvalTarget.lead.outboundDraft}
+          onClose={() => setApprovalTarget(null)}
+          onSent={(result) => handleOutboundSent(approvalTarget.lead.id, result)}
+        />
+      )}
+
+      {approvalTarget && approvalTarget.type !== "outbound" && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-          <div className="w-full max-w-2xl rounded-3xl bg-white p-6 shadow-2xl">
-            <div className="mb-5 flex items-center justify-between">
+          <div className="flex max-h-[90vh] w-full max-w-2xl flex-col rounded-3xl bg-white shadow-2xl">
+            <div className="flex shrink-0 items-center justify-between border-b border-slate-200 px-6 pb-4 pt-6">
               <div>
                 <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">Revisión antes del envío</p>
                 <h3 className="mt-1 font-serif text-2xl font-bold text-[#071C21]">
@@ -1167,36 +1208,40 @@ export default function Home() {
               </button>
             </div>
 
-            {approvalTarget.type === "roi" && approvalTarget.lead.roiProposal ? (
+            <div className="min-h-0 flex-1 overflow-y-auto px-6 py-5">
+            {approvalTarget.type === "roi" ? (
+              <RoiSimulator lead={approvalTarget.lead} />
+            ) : approvalTarget.type === "dossier" && approvalTarget.lead.dossierDocument ? (
               <div className="space-y-4">
                 <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
-                  <p className="text-xs text-slate-600">Modelo recomendado</p>
-                  <p className="mt-1 font-semibold text-[#071C21]">{approvalTarget.lead.roiProposal.equipmentModel}</p>
+                  <p className="text-xs text-slate-600">Producto ConfIA (catálogo maestro)</p>
+                  <p className="mt-1 font-semibold text-[#071C21]">{approvalTarget.lead.dossierDocument.productName}</p>
                 </div>
                 <div className="grid gap-3 md:grid-cols-2">
-                  <InfoCard label="Costo por sesión" value={formatCurrency(approvalTarget.lead.roiProposal.costPerSession)} />
-                  <InfoCard label="Ingreso neto estimado" value={formatCurrency(approvalTarget.lead.roiProposal.estimatedNetMonthly)} />
-                  <InfoCard label="Kits por mes" value={`${approvalTarget.lead.roiProposal.minimumKitsPerMonth} kits`} />
-                  <InfoCard label="Sesiones proyectadas" value={`${approvalTarget.lead.roiProposal.projectedSessionsMonth} al mes`} />
+                  <InfoCard label="Registro Sanitario" value={approvalTarget.lead.dossierDocument.regulatory.registryNumber} />
+                  <InfoCard label="Clasificación" value={approvalTarget.lead.dossierDocument.regulatory.classification} />
+                  <InfoCard label="Certificado Calibración" value={approvalTarget.lead.dossierDocument.regulatory.calibrationCertificate} />
+                  <InfoCard label="Consentimiento Legal" value={approvalTarget.lead.dossierDocument.regulatory.informedConsentTemplate} />
                 </div>
-              </div>
-            ) : approvalTarget.type === "dossier" && approvalTarget.lead.digemidDossier ? (
-              <div className="space-y-4">
-                <div className="grid gap-3 md:grid-cols-2">
-                  <InfoCard label="Registro Sanitario" value={approvalTarget.lead.digemidDossier.registryNumber} />
-                  <InfoCard label="Clasificación" value={approvalTarget.lead.digemidDossier.classification} />
-                  <InfoCard label="Certificado Calibración" value={approvalTarget.lead.digemidDossier.calibrationCertificate} />
-                  <InfoCard label="Consentimiento Legal" value={approvalTarget.lead.digemidDossier.informedConsentTemplate} />
-                </div>
-              </div>
-            ) : approvalTarget.type === "outbound" && approvalTarget.lead.outboundDraft ? (
-              <div className="space-y-4">
-                <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
-                  <p className="text-xs text-slate-500">Dirigido a: <strong className="text-slate-800">{approvalTarget.lead.outboundDraft.recipientName}</strong> ({approvalTarget.lead.outboundDraft.recipientRole})</p>
-                  <p className="mt-2 text-xs font-semibold text-[#071C21]">Asunto: {approvalTarget.lead.outboundDraft.subject}</p>
-                </div>
-                <div className="rounded-2xl border border-slate-200 bg-white p-4 text-xs leading-relaxed text-slate-700 whitespace-pre-line border-l-4 border-l-[#0B6E4F]">
-                  {approvalTarget.lead.outboundDraft.body}
+                <div className="rounded-2xl border border-amber-200 bg-amber-50 p-4 text-xs text-amber-900">
+                  <p className="font-semibold">Versión {approvalTarget.lead.dossierDocument.versionLabel} generada</p>
+                  <p className="mt-1">Verificar la vigencia de los datos regulatorios antes de enviar.</p>
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    <button
+                      type="button"
+                      onClick={() => handleDownloadDossier("pdf")}
+                      className="rounded-full border border-amber-300 bg-white px-4 py-1.5 font-semibold text-amber-900 hover:bg-amber-100"
+                    >
+                      Descargar PDF
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handleDownloadDossier("markdown")}
+                      className="rounded-full border border-amber-300 bg-white px-4 py-1.5 font-semibold text-amber-900 hover:bg-amber-100"
+                    >
+                      Descargar Markdown
+                    </button>
+                  </div>
                 </div>
               </div>
             ) : (
@@ -1205,7 +1250,9 @@ export default function Home() {
               </div>
             )}
 
-            <div className="mt-6 flex flex-wrap gap-3">
+            </div>
+
+            <div className="flex shrink-0 flex-wrap gap-3 border-t border-slate-200 bg-white px-6 py-4">
               <button
                 type="button"
                 onClick={() => handleApprove(approvalTarget.lead.id, approvalTarget.type)}

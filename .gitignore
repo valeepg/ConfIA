@@ -42,3 +42,9 @@ __pycache__/
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# backend generated dossiers (local storage)
+backend/app/storage/output/
+
+# Token OAuth de Gmail (credencial local, nunca al repositorio)
+backend/app/storage/secrets/

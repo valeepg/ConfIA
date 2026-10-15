@@ -88,7 +88,7 @@ export const RoiApprovalModal: React.FC<RoiModalProps> = ({
               </p>
               <div className="mt-2 flex items-center gap-1.5 text-xs text-[#059669] font-medium">
                 <ShieldCheck className="w-4 h-4" />
-                <span>Registro DIGEMID DB7384E</span>
+                <span>Registro DIGEMID DM-14820-E</span>
               </div>
             </div>
 
@@ -223,7 +223,7 @@ export const DossierModal: React.FC<DossierModalProps> = ({
             <div className="p-3 bg-gray-50 border border-gray-200 rounded-xl flex items-center justify-between">
               <div>
                 <p className="text-xs font-semibold text-gray-800">1. Registro Sanitario DIGEMID</p>
-                <p className="text-[11px] text-gray-500 font-mono">Código: DB7384E — Ozonette (SEDECAL)</p>
+                <p className="text-[11px] text-gray-500 font-mono">Código: DM-14820-E — Ozonette (SEDECAL)</p>
               </div>
               <span className="text-xs font-bold text-emerald-700 bg-emerald-50 px-2 py-1 rounded">Vigente</span>
             </div>

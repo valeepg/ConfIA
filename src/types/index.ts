@@ -17,13 +17,32 @@ export interface RoiProposal {
   estimatedNetMonthly: number;
 }
 
+/** Datos regulatorios oficiales de ConfIA (catálogo maestro). Los asigna el backend, nunca el lead ni la IA. */
 export interface DigemidDossier {
   registryNumber: string;
   classification: string;
   calibrationCertificate: string;
   goodPracticesCertificate: string;
   informedConsentTemplate: string;
-  verified: boolean;
+}
+
+/** Documento generado por el backend (Markdown + PDF) con versionado local. */
+export interface GeneratedDossier {
+  leadId: string;
+  version: number;
+  versionLabel: string;
+  productLine: string;
+  productName: string;
+  catalogMatch: 'explicit' | 'specialty' | 'default';
+  regulatory: DigemidDossier;
+  markdownPath: string;
+  pdfPath: string;
+  downloadUrls: {
+    markdown: string;
+    pdf: string;
+  };
+  generatedAt: string;
+  verificationRequired: true;
 }
 
 export interface OutboundDraft {
@@ -53,7 +72,8 @@ export interface Lead {
   clientType?: 'Clinica' | 'Hospital Publico' | 'Consultorio Privado' | 'Medico Independiente';
   outboundDraft?: OutboundDraft;
   roiProposal?: RoiProposal;
-  digemidDossier?: DigemidDossier;
+  dossierDocument?: GeneratedDossier;
+  lastOutboundSentAt?: string;
 }
 
 export type ConsumableStatus = 'agotado' | 'reabastecer' | 'al_dia';
@@ -120,7 +140,7 @@ export interface ProposalDocument {
   status: 'pending_approval' | 'approved' | 'discarded';
   createdBy: string;
   approvedBy?: string;
-  aiContent: OutboundDraft | RoiProposal | DigemidDossier | ConsumableItem['reminderDraft'];
+  aiContent: OutboundDraft | RoiProposal | GeneratedDossier | ConsumableItem['reminderDraft'];
 }
 
 export interface InstalledBaseRecord {
@@ -162,4 +182,73 @@ export interface RegulatoryFile {
   uploadedAt: string;
   sizeKB: number;
   feedsAI: boolean;
+}
+
+/* ── Simulador de contraofertas (procedimiento v0.3) ── */
+
+/** Parámetros que ajusta el dueño. Las cifras del catálogo (lista, costos) las resuelve el backend. */
+export interface RoiOffer {
+  productId: string;
+  sessionPricePen: number;
+  sessionsPerMonth: number;
+  equipmentPriceUsd: number;
+  installationIncluded: boolean;
+  trainingIncludedSessions: number;
+  installments: number;
+  warrantyMonths: number;
+}
+
+export type RoiZone = 'win_win' | 'clinic_only' | 'tecnocare_only' | 'none';
+
+/** Resultado del cálculo. El margen y el precio mínimo son internos: no se muestran a la clínica. */
+export interface RoiEvaluation {
+  investmentUsd: number;
+  monthlyFlowUsd: number;
+  recoveryMonths: number | null;
+  return24m: number | null;
+  margin: number | null;
+  installationChargedUsd: number;
+  trainingChargedUsd: number;
+  clinicViable: boolean;
+  tecnocareViable: boolean;
+  zone: RoiZone;
+  minEquipmentPriceUsd: number | null;
+  violations: string[];
+  status: 'green' | 'red';
+  message: string;
+  dataStatus: string;
+}
+
+export interface RoiProforma {
+  leadId: string;
+  version: number;
+  versionLabel: string;
+  productName: string;
+  evaluation: RoiEvaluation;
+  pdfPath: string;
+  paramsPath: string;
+  downloadUrls: {
+    pdf: string;
+    params: string;
+  };
+  generatedAt: string;
+}
+
+/* ── Envío de outbound por Gmail ── */
+
+/** Documento versionado del lead que puede adjuntarse al correo. */
+export interface LeadDocument {
+  version: number;
+  filename: 'document.pdf' | 'propuesta_comercial.pdf';
+  label: string;
+  downloadUrl: string;
+}
+
+export interface OutboundSendResult {
+  status: 'contactado';
+  messageId: string;
+  sentAt: string;
+  to: string;
+  subject: string;
+  attachments: string[];
 }

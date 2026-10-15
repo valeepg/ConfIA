@@ -1,0 +1,51 @@
+# ConfIA en local: backend (FastAPI) + frontend (Next.js estático).
+#   docker compose up --build
+#   Frontend: http://localhost:3000    Backend: http://localhost:8000/health
+
+name: confia
+
+services:
+  backend:
+    build:
+      context: ./backend
+    ports:
+      - "8000:8080"
+    env_file:
+      - path: ./backend/.env
+        required: false
+    environment:
+      PORT: "8080"
+      CORS_ALLOWED_ORIGINS: http://localhost:3000
+      CONFIA_REQUIRE_AUTH: "false"
+      GOOGLE_CLOUD_PROJECT: ${GOOGLE_CLOUD_PROJECT:-}
+      GOOGLE_CLOUD_LOCATION: ${GOOGLE_CLOUD_LOCATION:-us-central1}
+      GEMINI_MODEL: ${GEMINI_MODEL:-gemini-2.5-flash}
+    # Para llamar a Gemini desde el contenedor hace falta ADC. En Windows, descomenta:
+    # volumes:
+    #   - ${APPDATA}/gcloud:/root/.config/gcloud:ro
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8080/health', timeout=3)"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
+
+  frontend:
+    build:
+      context: .
+      # Se incrustan en el build: el navegador llama al backend publicado en el host.
+      args:
+        NEXT_PUBLIC_AI_API_URL: http://localhost:8000
+        NEXT_PUBLIC_USE_FIREBASE: ${NEXT_PUBLIC_USE_FIREBASE:-false}
+        NEXT_PUBLIC_FIREBASE_API_KEY: ${NEXT_PUBLIC_FIREBASE_API_KEY:-}
+        NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN: ${NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN:-}
+        NEXT_PUBLIC_FIREBASE_PROJECT_ID: ${NEXT_PUBLIC_FIREBASE_PROJECT_ID:-}
+        NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET: ${NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET:-}
+        NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID: ${NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID:-}
+        NEXT_PUBLIC_FIREBASE_APP_ID: ${NEXT_PUBLIC_FIREBASE_APP_ID:-}
+        NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID: ${NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID:-}
+    ports:
+      - "3000:3000"
+    depends_on:
+      backend:
+        condition: service_healthy
