@@ -214,7 +214,9 @@ export default function Home() {
     setIsReprioritizing(true);
     setDataMessage("Reordenando clientes por orden de mayor interés y afinidad médica...");
     setTimeout(() => {
-      setLeads((prev) => [...prev].sort((a, b) => b.score - a.score));
+      // `score` puede ser `null` (los prospectos de búsqueda no tienen puntaje del padrón): van al
+      // final, no primero, porque `null` no es 0.
+      setLeads((prev) => [...prev].sort((a, b) => (b.score ?? -1) - (a.score ?? -1)));
       setIsReprioritizing(false);
       setDataMessage(`¡Priorización actualizada! Clientes ordenados con umbral activo de ${minScoreThreshold} pts.`);
     }, 600);
@@ -456,7 +458,7 @@ export default function Home() {
                                 <div className="mb-2 flex items-center justify-between gap-2">
                                   <p className="font-semibold text-[#071C21] text-sm leading-snug">{lead.name}</p>
                                   <span className="rounded-full bg-[#EAFBF4] px-2 py-0.5 text-xs font-bold text-[#0B6E4F] shrink-0">
-                                    {lead.score} pts
+                                    {lead.score === null ? 'Sin puntaje' : `${lead.score} pts`}
                                   </span>
                                 </div>
                                 
@@ -502,7 +504,7 @@ export default function Home() {
                       </span>
                       <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-amber-100 text-amber-900 border border-amber-300 flex items-center gap-1">
                         <Award className="h-3.5 w-3.5 text-amber-600" />
-                        {leads.filter((l) => l.score >= minScoreThreshold).length} alta prioridad
+                        {leads.filter((l) => (l.score ?? 0) >= minScoreThreshold).length} alta prioridad
                       </span>
                     </div>
                   </div>
@@ -510,7 +512,7 @@ export default function Home() {
                   {/* Listado con diferenciación visual dorada para clientes de alto interés */}
                   <div className="space-y-3">
                     {leads.map((lead) => {
-                      const isHighPriority = lead.score >= minScoreThreshold;
+                      const isHighPriority = (lead.score ?? 0) >= minScoreThreshold;
                       return (
                         <button
                           key={lead.id}
@@ -541,7 +543,7 @@ export default function Home() {
                               )}
                             </div>
                             <p className="text-xs text-slate-500 mt-1.5">{lead.district} · {lead.specialty}</p>
-                            <p className="text-xs text-slate-600 mt-0.5">Responsable: <strong className="text-slate-800">{lead.directorMedico}</strong> ({lead.doctorSpecialty})</p>
+                            <p className="text-xs text-slate-600 mt-0.5">Responsable: <strong className="text-slate-800">{lead.directorMedico ?? 'Sin identificar'}</strong> ({lead.doctorSpecialty ?? '—'})</p>
                           </div>
 
                           <div className="text-right shrink-0 ml-4">
@@ -549,14 +551,14 @@ export default function Home() {
                               <div className="inline-flex flex-col items-end">
                                 <span className="inline-flex items-center gap-1 rounded-full bg-gradient-to-r from-amber-100 to-yellow-100 border border-amber-300 px-3 py-1 text-xs font-extrabold text-amber-900 shadow-xs">
                                   <Sparkles className="h-3.5 w-3.5 text-amber-600" />
-                                  {lead.score} pts
+                                  {lead.score === null ? 'Sin puntaje' : `${lead.score} pts`}
                                 </span>
                                 <span className="text-[10px] font-bold text-amber-700 mt-1 uppercase tracking-wider">Interés Máximo</span>
                               </div>
                             ) : (
                               <div className="inline-flex flex-col items-end">
                                 <span className="inline-flex rounded-full bg-slate-100 border border-slate-200 px-2.5 py-1 text-xs font-semibold text-slate-700">
-                                  {lead.score} pts
+                                  {lead.score === null ? 'Sin puntaje' : `${lead.score} pts`}
                                 </span>
                                 <p className="mt-1 text-xs text-slate-500">{STATUS_META[lead.status].label}</p>
                               </div>
@@ -657,11 +659,11 @@ export default function Home() {
                   <div className="rounded-2xl border border-amber-200 bg-white p-5 shadow-sm">
                     <div className="flex items-center gap-2 text-amber-900 mb-3">
                       <Award className="h-4 w-4 text-amber-600" />
-                      <p className="text-xs font-bold uppercase tracking-[0.18em]">Clientes Más Interesados ({leads.filter((l) => l.score >= minScoreThreshold).length})</p>
+                      <p className="text-xs font-bold uppercase tracking-[0.18em]">Clientes Más Interesados ({leads.filter((l) => (l.score ?? 0) >= minScoreThreshold).length})</p>
                     </div>
                     <div className="space-y-2.5">
                       {leads
-                        .filter((l) => l.score >= minScoreThreshold)
+                        .filter((l) => (l.score ?? 0) >= minScoreThreshold)
                         .slice(0, 4)
                         .map((lead) => (
                           <div

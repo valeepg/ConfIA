@@ -7,9 +7,11 @@ type ApiProspect = {
   name: string;
   district: string;
   specialty: string;
-  director_medico: string;
-  doctor_specialty: string;
-  score: number;
+  // `null` cuando ninguna fuente pública trae el dato (ver src/types/index.ts): el backend tiene que
+  // aceptarlo y decidir qué escribe en el prompt, en vez de recibir una cadena vacía disfrazada.
+  director_medico: string | null;
+  doctor_specialty: string | null;
+  score: number | null;
   ai_suggestion: string;
 };
 
