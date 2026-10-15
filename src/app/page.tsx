@@ -659,11 +659,11 @@ export default function Home() {
                   <div className="rounded-2xl border border-amber-200 bg-white p-5 shadow-sm">
                     <div className="flex items-center gap-2 text-amber-900 mb-3">
                       <Award className="h-4 w-4 text-amber-600" />
-                      <p className="text-xs font-bold uppercase tracking-[0.18em]">Clientes Más Interesados ({leads.filter((l) => l.score >= minScoreThreshold).length})</p>
+                      <p className="text-xs font-bold uppercase tracking-[0.18em]">Clientes Más Interesados ({leads.filter((l) => (l.score ?? 0) >= minScoreThreshold).length})</p>
                     </div>
                     <div className="space-y-2.5">
                       {leads
-                        .filter((l) => l.score >= minScoreThreshold)
+                        .filter((l) => (l.score ?? 0) >= minScoreThreshold)
                         .slice(0, 4)
                         .map((lead) => (
                           <div
