@@ -80,12 +80,42 @@ leer el dato: es exactamente la amenaza de la sección 1.
    herramientas de desarrollo. **`installed_base` con datos personales tiene que escribirse por la
    API**, que es la única que tiene la pimienta.
 
+### Qué va hasheado, qué va cifrado y qué queda en claro
+
+La regla, en una frase: **si hay que mostrarlo, cifrado; si solo hay que compararlo, hasheado; si es
+del establecimiento, en claro.**
+
+| Dato | Cómo se guarda | Se puede buscar por él |
+|---|---|---|
+| DNI, número de documento | Hash con pimienta | Sí, **solo por igualdad** (nunca por rango ni por prefijo) |
+| Nombre del contacto, su teléfono, su correo | Cifrado reversible | **No** |
+| Nombre, teléfono y dirección del establecimiento | En claro | Sí, con cualquier filtro |
+| `directorMedico` | No se guarda: ninguna fuente lo trae | — |
+
+**Ese "no" de la tercera columna es la trampa de "ciframos todo".** Firestore no puede hacer
+`where("distrito", "==", ...)` sobre un texto cifrado, y Fernet es aleatorio a propósito: el mismo
+nombre cifrado dos veces da dos textos distintos, así que ni siquiera se puede agrupar por él. Cifrar
+un campo es decidir que no se va a poder filtrar por él — y los filtros del CRM son el producto.
+
 ### Estado de la implementación
 
-- **Hecho y probado:** el hash con pimienta (`backend/app/personal_data.py`, solo biblioteca estándar,
-  sin dependencias nuevas) y sus 8 tests.
-- **Especificado, no implementado:** el cifrado reversible de los campos que hay que leer. Necesita
-  una dependencia de cifrado y el punto 2 de arriba.
+Los dos mecanismos están **hechos y probados** en `backend/app/personal_data.py`, con **16 tests**:
+
+- **Hash con pimienta** (`hash_identificador`, `coincide`, `normalizar`) para lo que solo hay que
+  comparar. Solo biblioteca estándar.
+- **Cifrado reversible** (`cifrar`, `descifrar`, `descifrar_con_rotacion`) para lo que hay que leer.
+  Fernet, de `cryptography`, con la clave en Secret Manager.
+
+Cuatro detalles que los tests fijan a propósito:
+
+1. **Sin pimienta o sin clave, falla** en vez de usar una por defecto o guardar en claro. Una clave por
+   defecto es lo mismo que no tener clave, y se descubre cuando ya hay datos guardados con ella.
+2. **Un dato manipulado no se puede leer**: Fernet es autenticado, así que un texto cifrado alterado
+   falla en vez de devolver basura como si fuera un dato bueno.
+3. **`coincide` usa `hmac.compare_digest`**: comparar con `==` corta en el primer byte distinto, y ese
+   tiempo distinto alcanza para adivinar el hash byte por byte.
+4. **Rotar la clave no pierde datos**: `descifrar_con_rotacion` prueba la nueva y después las
+   anteriores, así que al rotar se agrega una clave y lo viejo se sigue leyendo hasta re-cifrarlo.
 
 ## 5. Tres cosas que **no** hay que hacer
 
