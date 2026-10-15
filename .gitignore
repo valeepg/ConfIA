@@ -48,3 +48,10 @@ backend/app/storage/output/
 
 # Token OAuth de Gmail (credencial local, nunca al repositorio)
 backend/app/storage/secrets/
+
+# Entorno virtual local y credenciales OAuth (nunca al repositorio)
+venv/
+client_secret*.json
+**/client_secret*.json
+*service-account*.json
+backend/app/storage/secrets/
