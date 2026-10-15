@@ -30,7 +30,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
   ];
 
   return (
-    <aside className="w-64 bg-[#0B1528] text-white flex flex-col justify-between shrink-0 h-screen sticky top-0 border-r border-[#1E293B] select-none shadow-xl">
+    <aside data-tour="sidebar" className="w-64 bg-[#0B1528] text-white flex flex-col justify-between shrink-0 h-screen sticky top-0 border-r border-[#1E293B] select-none shadow-xl">
       <div>
         {/* Brand Header - Tecnocare Style */}
         <div className="p-5 border-b border-[#1E293B] flex items-center justify-between bg-[#080E1D]">

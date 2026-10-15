@@ -40,3 +40,8 @@
 .animate-soft-pulse {
   animation: softPulse 2.5s infinite ease-in-out;
 }
+
+@keyframes bob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}

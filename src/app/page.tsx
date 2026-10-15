@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState, type ReactNode } from "react";
+import { useCallback, useEffect, useMemo, useState, type ReactNode } from "react";
 import type { User } from "firebase/auth";
 import {
   ArrowRight,
@@ -32,6 +32,13 @@ import {
 } from "lucide-react";
 
 import { OutboundApprovalModal } from "@/components/OutboundApprovalModal";
+import { AccountMenu } from "@/components/demo/AccountMenu";
+import { DemoSessionGate, useDemoSession } from "@/components/demo/DemoSessionGate";
+import { ImpactDashboard } from "@/components/reporting/ImpactDashboard";
+import { PosventaDashboard } from "@/components/reporting/PosventaDashboard";
+import { ViewSwitch } from "@/components/reporting/ViewSwitch";
+import { TutorialAssistant } from "@/components/tutorial/TutorialAssistant";
+import type { TutorialNavigation } from "@/lib/tutorialSteps";
 import { RoiSimulator } from "@/components/RoiSimulator";
 import { Sidebar } from "@/components/Sidebar";
 import {
@@ -41,6 +48,7 @@ import {
   INITIAL_LEADS,
   INITIAL_MAINTENANCE,
   INITIAL_TRAINING,
+  INITIAL_TRAINING_BY_CLINIC,
   INITIAL_EQUIPMENT,
   INITIAL_REGULATORY_FILES
 } from "@/data/mockData";
@@ -79,7 +87,23 @@ function formatUSD(value: number) {
 }
 
 export default function Home() {
+  return (
+    <DemoSessionGate>
+      <CrmHome />
+    </DemoSessionGate>
+  );
+}
+
+function CrmHome() {
+  const { tutorialRequest } = useDemoSession();
   const [currentTab, setCurrentTab] = useState<"pipeline" | "prospectos" | "posventa" | "catalogo" | "configuracion" | "documentos">("pipeline");
+  const [pipelineView, setPipelineView] = useState<"kanban" | "dashboard">("kanban");
+  const [posventaView, setPosventaView] = useState<"operativa" | "dashboard">("operativa");
+  // El tutorial navega a la pestaña o vista que necesita cada paso.
+  const handleTutorialNavigate = useCallback((navigation: TutorialNavigation) => {
+    if (navigation.tab) setCurrentTab(navigation.tab);
+    if (navigation.pipelineView) setPipelineView(navigation.pipelineView);
+  }, []);
   const [leads, setLeads] = useState<Lead[]>(INITIAL_LEADS);
   const [selectedLeadId, setSelectedLeadId] = useState<string>(INITIAL_LEADS[0].id);
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -376,6 +400,8 @@ export default function Home() {
 
               {/* Action Buttons with Tecnocare Navy and Orange accents */}
               <div className="flex flex-wrap items-center gap-2.5 self-start lg:self-auto">
+                <AccountMenu />
+
                 {authUser && (
                   <button type="button" onClick={() => signOutUser()} className="rounded-xl border border-slate-200 bg-white px-3.5 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50">
                     {authUser.displayName ?? authUser.email ?? "Salir"}
@@ -448,6 +474,20 @@ export default function Home() {
             {/* TAB: SEGUIMIENTO (KANBAN) */}
             {currentTab === "pipeline" && (
               <>
+                <ViewSwitch
+                  dataTour="report-switch"
+                  value={pipelineView}
+                  onChange={setPipelineView}
+                  options={[
+                    { value: "kanban", label: "Tablero Kanban" },
+                    { value: "dashboard", label: "Dashboard" },
+                  ]}
+                />
+
+                {pipelineView === "dashboard" ? (
+                  <ImpactDashboard leads={leads} />
+                ) : (
+              <>
                 <section className="mb-6 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
                   <MetricCard label="Clientes en contacto" value={metrics.openLeads.toString()} accent="sky" />
                   <MetricCard label="Propuestas por revisar" value={metrics.pendingDrafts.toString()} accent="orange" />
@@ -455,7 +495,7 @@ export default function Home() {
                   <MetricCard label="Clientes cerrados" value={metrics.activeClients.toString()} accent="deep" />
                 </section>
 
-                <section className="grid gap-4 xl:grid-cols-4">
+                <section data-tour="kanban" className="grid gap-4 xl:grid-cols-4">
                   {(["descubierto", "contactado", "propuesta_enviada", "cierre"] as PipelineStatus[]).map((stage) => {
                     const stageLeads = leads.filter((lead) => lead.status === stage);
                     return (
@@ -516,6 +556,8 @@ export default function Home() {
                     );
                   })}
                 </section>
+              </>
+                )}
               </>
             )}
 
@@ -721,9 +763,26 @@ export default function Home() {
 
             {/* TAB: CLIENTES Y EQUIPOS (POSVENTA) */}
             {currentTab === "posventa" && (
-              <section className="space-y-6">
+              <section data-tour="posventa" className="space-y-6">
+                <ViewSwitch
+                  value={posventaView}
+                  onChange={setPosventaView}
+                  options={[
+                    { value: "operativa", label: "Vista operativa" },
+                    { value: "dashboard", label: "Dashboard" },
+                  ]}
+                />
+
+                {posventaView === "dashboard" ? (
+                  <PosventaDashboard
+                    maintenance={INITIAL_MAINTENANCE}
+                    consumables={INITIAL_CONSUMABLES}
+                    training={INITIAL_TRAINING_BY_CLINIC}
+                  />
+                ) : (
+                <>
                 <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-                  <MetricCard label="Equipos instalados" value="14 unidades" accent="deep" />
+                  <MetricCard label="Equipos instalados" value={`${INITIAL_MAINTENANCE.length} unidades`} accent="deep" />
                   <MetricCard label="Insumos por reponer" value="2 clientes" accent="orange" />
                   <MetricCard label="Ciclo de Mantenimiento" value="Cada 5 años" accent="sky" />
                   <MetricCard label="Médicos capacitados" value="9 de 12" accent="blue" />
@@ -880,12 +939,14 @@ export default function Home() {
                     </div>
                   </div>
                 </div>
+                </>
+                )}
               </section>
             )}
 
             {/* TAB: CATÁLOGO DE EQUIPOS */}
             {currentTab === "catalogo" && (
-              <section className="space-y-6">
+              <section data-tour="catalogo" className="space-y-6">
                 <div className="flex flex-col gap-2 rounded-2xl bg-gradient-to-r from-[#0B1528] via-[#0F294D] to-[#0284C7] p-6 text-white shadow-md md:flex-row md:items-center md:justify-between">
                   <div>
                     <span className="text-[11px] font-bold uppercase tracking-widest text-[#38BDF8]">TECNOCARE · DISTRIBUIDOR OFICIAL</span>
@@ -1099,6 +1160,11 @@ export default function Home() {
               </section>
             )}
           </div>
+        <TutorialAssistant
+          key={tutorialRequest}
+          startOpen={tutorialRequest > 0}
+          onNavigate={handleTutorialNavigate}
+        />
         </main>
       </div>
 
