@@ -1,0 +1,34 @@
+{
+  "success": true,
+  "result": {
+    "name": "consulta-g-produccion-asistencial-de-procedimientos-por-ipress",
+    "title": "Consulta G",
+    "resources": [
+      {
+        "name": "Consulta G - Producción Asistencial de Procedimientos - 2019 - II",
+        "format": "csv",
+        "url": "http://example.test/ConsultaG_2019_II_v1.csv"
+      },
+      {
+        "name": "Consulta G - Producción Asistencial de Procedimientos - 2025 - IV",
+        "format": "csv",
+        "url": "http://example.test/ConsultaG_2025_IV_v3.csv"
+      },
+      {
+        "name": "Consulta G - Producción Asistencial de Procedimientos - Julio 2026",
+        "format": "csv",
+        "url": "http://example.test/ConsultaG_2026_07_v2.csv"
+      },
+      {
+        "name": "Consulta G - Producción Asistencial de Procedimientos - Agosto 2026",
+        "format": "csv",
+        "url": "http://example.test/ConsultaG_2026_08_v1.csv"
+      },
+      {
+        "name": "Diccionario de datos",
+        "format": "xlsx",
+        "url": "http://example.test/Diccionario_Datos_TABLA_G.xlsx"
+      }
+    ]
+  }
+}
