@@ -1,0 +1,28 @@
+[
+  {
+    "prospect_id": "places:16002912900950143659",
+    "template": "oaas-v1",
+    "model": "openai/deepseek-v4-flash",
+    "status": "pending_approval",
+    "approver": null,
+    "violations": [],
+    "missing_human_data": [
+      "[FIRMA DEL DUEÑO]"
+    ],
+    "subject": "Ozonoterapia en comodato para Artrauma",
+    "message": "Ozonoterapia en comodato para Artrauma\n\nEstimado equipo de Artrauma:\n\nLe escribimos a Artrauma, en Huaura, Lima, porque según Google figura como clínica de fisioterapia y cuenta con una valoración pública de 4.8 y 553 reseñas; además, la marca tiene 2 sucursales.\n\nLe proponemos el modelo de ozonoterapia en comodato, con un minimo de consumo de\ninsumos y soporte tecnico local.\n\n- Según Google, Artrauma figura como clínica de fisioterapia en Huaura, Lima; eso permite contextualizar la propuesta de ozonoterapia en comodato para un centro de fisioterapia y coordinar una visita técnica.\n- La valoración pública de 4.8 y 553 reseñas permite reconocer una presencia valorada en el mercado; sobre ese dato, se puede conversar el modelo en comodato con mínimo de consumo de insumos y soporte técnico local.\n- La marca tiene 2 sucursales; eso habilita a revisar el alcance del comodato y del soporte técnico local para una operación con más de una sede, sujeto a evaluación.\n- El sitio web https://www.artrauma.com.pe/ permite conocer la identidad de Artrauma; a partir de ahí, podemos coordinar una visita técnica y presentar el modelo de ozonoterapia en comodato con mínimo de consumo de insumos.\n\nQuedo a disposicion para coordinar una visita tecnica.\n\n[FIRMA DEL DUEÑO]\n"
+  },
+  {
+    "prospect_id": "places:10125989270365813710",
+    "template": "oaas-v1",
+    "model": "openai/deepseek-v4-flash",
+    "status": "pending_approval",
+    "approver": null,
+    "violations": [],
+    "missing_human_data": [
+      "[FIRMA DEL DUEÑO]"
+    ],
+    "subject": "Modelo de ozonoterapia en comodato para FISIOTERAPIA Y VIDA",
+    "message": "Modelo de ozonoterapia en comodato para FISIOTERAPIA Y VIDA\n\nEstimado equipo de FISIOTERAPIA Y VIDA,\n\nLes escribimos porque FISIOTERAPIA Y VIDA figura en Google como Clínica de fisioterapia en el distrito de Lima, departamento de Lima, y cuenta con sitio web propio. Además, tiene una calificación pública de 4.9 y 550 reseñas.\n\nLe proponemos el modelo de ozonoterapia en comodato, con un minimo de consumo de\ninsumos y soporte tecnico local.\n\n- El sitio web http://www.fisioterapiayvida.com/ les permite mostrar sus servicios y recibir consultas; eso les habilita a evaluar el modelo de ozonoterapia en comodato, con mínimo de consumo de insumos y soporte técnico local, como parte de su operación.\n- Figurar en Google como Clínica de fisioterapia les da un marco claro para evaluar la ozonoterapia dentro de su oferta de fisioterapia.\n- La calificación pública de 4.9 y las 550 reseñas respaldan su presencia en Lima; eso les permite considerar un modelo con soporte técnico local y mínimo de consumo de insumos sin depender de estructuras externas.\n- Estar en el distrito y departamento de Lima les facilita coordinar una visita técnica y acceder a soporte local.\n\nQuedo a disposicion para coordinar una visita tecnica.\n\n[FIRMA DEL DUEÑO]\n"
+  }
+]
