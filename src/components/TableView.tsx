@@ -101,7 +101,7 @@ export const TableView: React.FC<TableViewProps> = ({
                       </span>
                     ) : (
                       <span className="text-xs text-gray-400">
-                        {lead.telemetryActivity?.ahtmReads > 0 ? `${lead.telemetryActivity?.ahtmReads} artículos` : 'Sin actividad'}
+                        {(lead.telemetryActivity?.ahtmReads ?? 0) > 0 ? `${lead.telemetryActivity?.ahtmReads ?? 0} artículos` : 'Sin actividad'}
                       </span>
                     )}
                   </td>

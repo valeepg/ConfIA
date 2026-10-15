@@ -504,7 +504,7 @@ export default function Home() {
                       </span>
                       <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-amber-100 text-amber-900 border border-amber-300 flex items-center gap-1">
                         <Award className="h-3.5 w-3.5 text-amber-600" />
-                        {leads.filter((l) => l.score >= minScoreThreshold).length} alta prioridad
+                        {leads.filter((l) => (l.score ?? 0) >= minScoreThreshold).length} alta prioridad
                       </span>
                     </div>
                   </div>
@@ -512,7 +512,7 @@ export default function Home() {
                   {/* Listado con diferenciación visual dorada para clientes de alto interés */}
                   <div className="space-y-3">
                     {leads.map((lead) => {
-                      const isHighPriority = lead.score >= minScoreThreshold;
+                      const isHighPriority = (lead.score ?? 0) >= minScoreThreshold;
                       return (
                         <button
                           key={lead.id}
