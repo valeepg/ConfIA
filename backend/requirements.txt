@@ -3,3 +3,7 @@ firebase-admin>=6.6,<7
 google-genai>=1.0,<2
 pydantic>=2.7,<3
 uvicorn[standard]>=0.30,<1
+# Para los datos personales (app/personal_data.py): Fernet para el cifrado reversible de los campos
+# que hay que leer, y Secret Manager para la pimienta del hash y la clave.
+cryptography>=43,<46
+google-cloud-secret-manager>=2.20,<3

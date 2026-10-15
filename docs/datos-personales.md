@@ -52,18 +52,70 @@ que habla el vendedor, su teléfono— va cifrado con una clave que **no vive en
 en un proyecto con un permiso IAM separado. Así, una credencial que lee Firestore **no alcanza** para
 leer el dato: es exactamente la amenaza de la sección 1.
 
-## 4. Lo que hay que decidir antes de escribir código
+## 4. Decidido
 
-| Decisión | Opciones | Recomendación |
+| Decisión | Qué se decidió |
+|---|---|
+| ¿Se guarda el DNI? | **Sí, hasheado.** Nunca en claro: el hash alcanza para buscar y comparar, y no se puede revertir |
+| ¿Quién custodia la clave? | **Secret Manager** (la pimienta, `PERSONAL_DATA_PEPPER`) |
+| ¿Qué se protege? | **Los campos que sean información personal de una persona física** |
+
+### Cómo queda cada campo
+
+| Campo | Cómo se guarda | Por qué |
 |---|---|---|
-| ¿Se guarda el DNI? | sí / no / solo hash | **No** hoy. Si el negocio lo necesita para el contrato, **hash**, nunca en claro |
-| ¿Quién custodia la clave? | Cloud KMS / Secret Manager | **Cloud KMS**, con IAM separado del de Firestore y plan de rotación |
-| ¿Qué se cifra a nivel aplicación? | — | Solo lo que identifique a una persona física: nombre del contacto, su teléfono, su correo |
-| ¿Quién puede descifrar? | — | El dueño y el vendedor, **en la pantalla**. La ingesta, nunca |
+| DNI, número de documento | **Hash con pimienta**, irreversible | Solo hay que comparar: nunca hay que mostrarlo |
+| Nombre del contacto, su teléfono, su correo | **Cifrado reversible** (especificado, no implementado) | El vendedor tiene que leerlos para hablar con la persona |
+| Nombre, teléfono y dirección del establecimiento | En claro, como hoy | Persona jurídica, dato público (ver §2) |
 
-Mientras esas cuatro no estén decididas, `installed_base` puede construirse con los datos del
-establecimiento (que no son personales) y **dejar los campos de persona vacíos**, igual que se hizo
-con `directorMedico`: vacío declarado vale más que dato inventado o mal protegido.
+### Dos consecuencias que no son obvias
+
+1. **La pimienta necesita un permiso separado del de Firestore.** Si el mismo permiso da acceso a la
+   base y al secreto, la pimienta no protege de la amenaza de §1. Y tiene que poder **rotarse**: una
+   pimienta cacheada en una variable global de larga vida es una pimienta que no se puede rotar.
+   Ojo con el costo de rotar: los datos ya hasheados **dejan de encontrarse** hasta re-hashearlos.
+2. **El dato personal se escribe desde el backend, no desde el navegador.** La página escribe hoy
+   directo a Firestore, y eso está bien para datos públicos. Para un dato personal no: una clave que
+   se usa en la página viaja al navegador, o sea que está en la máquina de cualquiera que abra las
+   herramientas de desarrollo. **`installed_base` con datos personales tiene que escribirse por la
+   API**, que es la única que tiene la pimienta.
+
+### Qué va hasheado, qué va cifrado y qué queda en claro
+
+La regla, en una frase: **si hay que mostrarlo, cifrado; si solo hay que compararlo, hasheado; si es
+del establecimiento, en claro.**
+
+| Dato | Cómo se guarda | Se puede buscar por él |
+|---|---|---|
+| DNI, número de documento | Hash con pimienta | Sí, **solo por igualdad** (nunca por rango ni por prefijo) |
+| Nombre del contacto, su teléfono, su correo | Cifrado reversible | **No** |
+| Nombre, teléfono y dirección del establecimiento | En claro | Sí, con cualquier filtro |
+| `directorMedico` | No se guarda: ninguna fuente lo trae | — |
+
+**Ese "no" de la tercera columna es la trampa de "ciframos todo".** Firestore no puede hacer
+`where("distrito", "==", ...)` sobre un texto cifrado, y Fernet es aleatorio a propósito: el mismo
+nombre cifrado dos veces da dos textos distintos, así que ni siquiera se puede agrupar por él. Cifrar
+un campo es decidir que no se va a poder filtrar por él — y los filtros del CRM son el producto.
+
+### Estado de la implementación
+
+Los dos mecanismos están **hechos y probados** en `backend/app/personal_data.py`, con **16 tests**:
+
+- **Hash con pimienta** (`hash_identificador`, `coincide`, `normalizar`) para lo que solo hay que
+  comparar. Solo biblioteca estándar.
+- **Cifrado reversible** (`cifrar`, `descifrar`, `descifrar_con_rotacion`) para lo que hay que leer.
+  Fernet, de `cryptography`, con la clave en Secret Manager.
+
+Cuatro detalles que los tests fijan a propósito:
+
+1. **Sin pimienta o sin clave, falla** en vez de usar una por defecto o guardar en claro. Una clave por
+   defecto es lo mismo que no tener clave, y se descubre cuando ya hay datos guardados con ella.
+2. **Un dato manipulado no se puede leer**: Fernet es autenticado, así que un texto cifrado alterado
+   falla en vez de devolver basura como si fuera un dato bueno.
+3. **`coincide` usa `hmac.compare_digest`**: comparar con `==` corta en el primer byte distinto, y ese
+   tiempo distinto alcanza para adivinar el hash byte por byte.
+4. **Rotar la clave no pierde datos**: `descifrar_con_rotacion` prueba la nueva y después las
+   anteriores, así que al rotar se agrega una clave y lo viejo se sigue leyendo hasta re-cifrarlo.
 
 ## 5. Tres cosas que **no** hay que hacer
 
