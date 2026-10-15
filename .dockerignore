@@ -1,21 +1,16 @@
-# Everything the image does not need at build or run time.
+# Contexto de build del frontend (Dockerfile de la raíz).
 
 .git
-.gitignore
-
-# Raw CSV cache (~250 MB) and outputs: they arrive through the mounted data dir.
-data
-
-# Local virtualenv, if uv created one in the project.
+node_modules
+.next
+out
+.firebase
+venv
 .venv
+backend
 
-# Credentials never enter an image.
+# Secretos nunca entran a una imagen.
 .env
 .env.*
 
-__pycache__
-*.py[cod]
-
-# Module documentation and the hackathon brief are not runtime dependencies.
-docs
-tests
+*.tsbuildinfo
