@@ -1,0 +1,20 @@
+{
+  "success": true,
+  "result": {
+    "name": "registro-nacional-de-ipress-renipress",
+    "title": "Registro Nacional de IPRESS",
+    "resources": [
+      {
+        "name": "Registro Nacional de Ipress - RENIPRESS",
+        "format": "csv",
+        "url": "http://example.test/sites/default/files/RENIPRESS_2026_v7.csv",
+        "last_modified": "2026-09-30T17:07:37"
+      },
+      {
+        "name": "Diccionario de datos",
+        "format": "xlsx",
+        "url": "http://example.test/sites/default/files/Diccionario_Datos_RENIPRESS.xlsx"
+      }
+    ]
+  }
+}
